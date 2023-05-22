@@ -20,7 +20,7 @@ func (u *userPG) RegisterUser(newUser *models.User) (*models.User, errs.MessageE
 
 }
 
-func (u *userPG) LoginUser(user *models.User) errs.MessageErr {
+func (u *userPG) GetUserByEmail(user *models.User) errs.MessageErr {
 
 }
 

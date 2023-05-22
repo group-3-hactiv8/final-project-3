@@ -7,7 +7,7 @@ import (
 
 type UserRepository interface {
 	RegisterUser(user *models.User) (*models.User, errs.MessageErr)
-	LoginUser(user *models.User) errs.MessageErr
+	GetUserByEmail(user *models.User) errs.MessageErr
 	UpdateUser(user *models.User) (*models.User, errs.MessageErr)
 	DeleteUser(id uint) errs.MessageErr
 }
