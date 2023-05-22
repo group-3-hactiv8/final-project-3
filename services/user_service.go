@@ -24,6 +24,7 @@ func NewUserService(userRepo user_repository.UserRepository) UserService {
 
 func (u *userService) RegisterUser(payload *dto.NewUserRequest) (*dto.NewUserResponse, errs.MessageErr) {
 	newUser := payload.UserRequestToModel()
+	newUser.Role = "member"
 
 	createdUser, err := u.userRepo.RegisterUser(newUser)
 	if err != nil {
