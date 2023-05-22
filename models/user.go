@@ -1,6 +1,7 @@
 package models
 
 import (
+	"final-project-3/helpers"
 	"final-project-3/pkg/errs"
 	"fmt"
 
@@ -22,6 +23,8 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	if err != nil {
 		return errs.NewUnprocessableEntity(err.Error())
 	}
+
+	u.Password = helpers.HashPass(u.Password)
 
 	if u.Role == "admin" || u.Role == "member" {
 		return nil
