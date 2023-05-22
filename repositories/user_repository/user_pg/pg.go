@@ -19,7 +19,7 @@ func NewUserPG(db *gorm.DB) user_repository.UserRepository {
 }
 
 func (u *userPG) SeedingAdmin() {
-	newAdmin := models.User{
+	newAdmin := &models.User{
 		FullName: "admin",
 		Email:    "admin@gmail.com",
 		Password: "123456",
@@ -31,13 +31,13 @@ func (u *userPG) SeedingAdmin() {
 		err2 := u.db.Where("role = ?", "admin").Take(&initialAdmin).Error
 
 		if err2 != nil { // error gabsia nge create pdhl blom ada admin
-			log.Println(err.Error())
+			log.Println("\n" + err.Error() + "\n")
 		} else { // admin udah ada
-			message := fmt.Sprintf("Admin already exist with email %s", initialAdmin.Email)
+			message := fmt.Sprintf("\nAdmin already exist with email %s\n", initialAdmin.Email)
 			log.Println(message)
 		}
 	} else { // baru buat admin pertama kali
-		log.Println("Admin has been created successfully")
+		log.Println("\nAdmin has been created successfully\n")
 	}
 
 }
@@ -60,6 +60,19 @@ func (u *userPG) GetUserByEmail(user *models.User) errs.MessageErr {
 
 	if err != nil {
 		err2 := errs.NewBadRequest("Wrong email/password")
+		return err2
+	}
+
+	return nil
+}
+func (u *userPG) GetUserByID(user *models.User) errs.MessageErr {
+	err := u.db.Where("id = ?", user.ID).Take(&user).Error
+	// Karna di Take, objek user akan terupdate, termasuk passwordnya.
+	// Makannya kita simpen dulu password dari request nya di service level.
+
+	if err != nil {
+		message := fmt.Sprintf("User with ID %v not found", user.ID)
+		err2 := errs.NewNotFound(message)
 		return err2
 	}
 
