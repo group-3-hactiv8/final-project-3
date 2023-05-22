@@ -35,8 +35,8 @@ func StartApp() *gin.Engine {
 	{
 		usersRouter.POST("/register", userHandler.RegisterUser)
 		usersRouter.POST("/login", userHandler.LoginUser)
-		usersRouter.PUT("/:id", middlewares.Authentication(), userHandler.UpdateUser)
-		usersRouter.DELETE("/", middlewares.Authentication(), userHandler.DeleteUser)
+		usersRouter.PUT("/update-account", middlewares.Authentication(), userHandler.UpdateUser)
+		usersRouter.DELETE("/delete-account", middlewares.Authentication(), userHandler.DeleteUser)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
