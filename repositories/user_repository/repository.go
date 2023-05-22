@@ -6,6 +6,7 @@ import (
 )
 
 type UserRepository interface {
+	SeedingAdmin()
 	RegisterUser(user *models.User) (*models.User, errs.MessageErr)
 	GetUserByEmail(user *models.User) errs.MessageErr
 	UpdateUser(user *models.User) (*models.User, errs.MessageErr)

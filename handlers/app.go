@@ -31,6 +31,8 @@ func StartApp() *gin.Engine {
 	userService := services.NewUserService(userRepo)
 	userHandler := http_handlers.NewUserHandler(userService)
 
+	userRepo.SeedingAdmin()
+
 	usersRouter := router.Group("/users")
 	{
 		usersRouter.POST("/register", userHandler.RegisterUser)

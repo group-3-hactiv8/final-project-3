@@ -18,6 +18,30 @@ func NewUserPG(db *gorm.DB) user_repository.UserRepository {
 	return &userPG{db: db}
 }
 
+func (u *userPG) SeedingAdmin() {
+	newAdmin := models.User{
+		FullName: "admin",
+		Email:    "admin@gmail.com",
+		Password: "123456",
+		Role:     "admin",
+	}
+	if err := u.db.Create(newAdmin).Error; err != nil {
+		initialAdmin := &models.User{}
+
+		err2 := u.db.Where("role = ?", "admin").Take(&initialAdmin).Error
+
+		if err2 != nil { // error gabsia nge create pdhl blom ada admin
+			log.Println(err.Error())
+		} else { // admin udah ada
+			message := fmt.Sprintf("Admin already exist with email %s", initialAdmin.Email)
+			log.Println(message)
+		}
+	} else { // baru buat admin pertama kali
+		log.Println("Admin has been created successfully")
+	}
+
+}
+
 func (u *userPG) RegisterUser(newUser *models.User) (*models.User, errs.MessageErr) {
 	if err := u.db.Create(newUser).Error; err != nil {
 		log.Println(err.Error())
