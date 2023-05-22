@@ -1,11 +1,35 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"final-project-3/helpers"
+	"final-project-3/pkg/errs"
+	"fmt"
+
+	"github.com/asaskevich/govalidator"
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
-	FullName string `json:"fullname"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Role     string `json:"role"`
+	FullName string `gorm:"not null" json:"full_name"`
+	Email    string `gorm:"not null;uniqueIndex" json:"email"`
+	Password string `gorm:"not null" json:"password"`
+	Role     string `gorm:"not null" json:"role"`
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	_, err := govalidator.ValidateStruct(u)
+
+	if err != nil {
+		return errs.NewUnprocessableEntity(err.Error())
+	}
+
+	u.Password = helpers.HashPass(u.Password)
+
+	if u.Role == "admin" || u.Role == "member" {
+		return nil
+	} else {
+		message := fmt.Sprintf("Invalid Role value: %s", u.Role)
+		return errs.NewUnprocessableEntity(message)
+	}
 }

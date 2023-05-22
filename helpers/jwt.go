@@ -47,12 +47,15 @@ func VerifyToken(c *gin.Context) (interface{}, error) {
 
 	// Claims tugasnya mencasting jd jwt.MapClaims.
 	// Ngecek bisa di cast atau engga, dan apakah tokennya valid.
-	// Maksutnya valid disini apaya??? kan blom ngecek ke DB passnya
+	// Maksutnya valid disini apaya??? kan blom ngecek ke DB passnya.
+	// Ngecek ke DB di middleware authentication.
 	if _, ok := token.Claims.(jwt.MapClaims); !ok && !token.Valid {
 		return nil, errResponse
 	}
 
 	// isi dari MapClaims ini adalah id dan email yg digenerate
 	// di awal pas login.
-	return token.Claims.(jwt.MapClaims), nil
+	mapClaims := token.Claims.(jwt.MapClaims)
+
+	return mapClaims, nil
 }
