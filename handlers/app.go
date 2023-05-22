@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"final-project-3/database"
-	_ "final-project-3/docs"
+	// _ "final-project-3/docs"
 	"final-project-3/handlers/http_handlers"
 	"final-project-3/middlewares"
 	"final-project-3/repositories/user_repository/user_pg"
@@ -31,6 +31,8 @@ func StartApp() *gin.Engine {
 	userService := services.NewUserService(userRepo)
 	userHandler := http_handlers.NewUserHandler(userService)
 
+	// seeding admin with email: admin@gmail.com,
+	// password: 123456
 	userRepo.SeedingAdmin()
 
 	usersRouter := router.Group("/users")
