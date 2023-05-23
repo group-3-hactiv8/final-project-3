@@ -78,7 +78,7 @@ func (t *taskHandler) CreateTask(ctx *gin.Context) {
 //	@Failure		400		{object}	errs.MessageErrData
 //	@Failure		422		{object}	errs.MessageErrData
 //	@Failure		500		{object}	errs.MessageErrData
-//	@Router			/tasks [patch]
+//	@Router			/tasks/update-status/{taskId} [patch]
 func (t *taskHandler) UpdateStatus(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("taskId"))
 	if err != nil {
