@@ -4,12 +4,12 @@ import "gorm.io/gorm"
 
 type Task struct {
 	gorm.Model
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Title       string `gorm:"not null" json:"title"`
+	Description string `gorm:"not null" json:"description"`
 	Status      bool   `json:"status"`
 	UserId      uint   `json:"user_id"`
 	User        User
-	CategoryID  uint `json:"category_id"`
+	CategoryId  uint `json:"category_id"`
 	Category    Category
 }
 

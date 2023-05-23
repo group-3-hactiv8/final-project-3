@@ -5,6 +5,7 @@ import (
 	// _ "final-project-3/docs"
 	"final-project-3/handlers/http_handlers"
 	"final-project-3/middlewares"
+	"final-project-3/repositories/task_repository/task_pg"
 	"final-project-3/repositories/user_repository/user_pg"
 	"final-project-3/services"
 
@@ -41,6 +42,20 @@ func StartApp() *gin.Engine {
 		usersRouter.POST("/login", userHandler.LoginUser)
 		usersRouter.PUT("/update-account", middlewares.Authentication(), userHandler.UpdateUser)
 		usersRouter.DELETE("/delete-account", middlewares.Authentication(), userHandler.DeleteUser)
+	}
+
+	taskRepo := task_pg.NewTaskPG(db)
+	taskService := services.NewTaskService(taskRepo)
+	taskHandler := http_handlers.NewTaskHandler(taskService)
+
+	tasksRouter := router.Group("/tasks")
+	{
+		tasksRouter.POST("/", taskHandler.CreateTask)
+		// tasksRouter.POST("/", taskHandler.ViewAllTasks)
+		// tasksRouter.PUT("/:taskId", middlewares.Authentication(), taskHandler.UpdateTitleAndDesc)
+		tasksRouter.PATCH("/update-status/:taskId", middlewares.Authentication(), taskHandler.UpdateStatus)
+		// tasksRouter.PATCH("/update-category/:taskId", middlewares.Authentication(), taskHandler.UpdateCategory)
+		// tasksRouter.DELETE("/:taskId", middlewares.Authentication(), taskHandler.Deletetask)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
