@@ -7,6 +7,7 @@ import (
 	"final-project-3/middlewares"
 	"final-project-3/repositories/user_repository/user_pg"
 	"final-project-3/services"
+	"final-project-3/repositories/category_repository/category_pg"
 
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -41,6 +42,15 @@ func StartApp() *gin.Engine {
 		usersRouter.POST("/login", userHandler.LoginUser)
 		usersRouter.PUT("/update-account", middlewares.Authentication(), userHandler.UpdateUser)
 		usersRouter.DELETE("/delete-account", middlewares.Authentication(), userHandler.DeleteUser)
+	}
+
+	categoryRepo := category_pg.NewCategoryPG(db)
+	categoryService := services.NewCategoryService(categoryRepo)
+	categoryHandler := http_handlers.NewCategoryHandler(categoryService)
+
+	categoryRouter := router.Group("/category")
+	{
+		categoryRouter.POST("/create", categoryHandler.CreateCategory)		
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
