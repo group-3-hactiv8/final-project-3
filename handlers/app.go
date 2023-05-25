@@ -54,10 +54,10 @@ func StartApp() *gin.Engine {
 	{
 		tasksRouter.POST("/", taskHandler.CreateTask)
 		// tasksRouter.POST("/", taskHandler.ViewAllTasks)
-		// tasksRouter.PUT("/:taskId", middlewares.Authentication(), taskHandler.UpdateTitleAndDesc)
-		tasksRouter.PATCH("/update-status/:taskId", middlewares.Authentication(), taskHandler.UpdateStatus)
-		// tasksRouter.PATCH("/update-category/:taskId", middlewares.Authentication(), taskHandler.UpdateCategory)
-		// tasksRouter.DELETE("/:taskId", middlewares.Authentication(), taskHandler.Deletetask)
+		// tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTitleAndDesc)
+		tasksRouter.PATCH("/update-status/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateStatus)
+		// tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategory)
+		// tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.Deletetask)
 	}
 
 	categoryRepo := category_pg.NewCategoryPG(db)
