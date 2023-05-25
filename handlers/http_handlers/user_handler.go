@@ -54,6 +54,18 @@ func (u *userHandler) RegisterUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, createdUser)
 }
 
+// LoginUser godoc
+//
+//	@Summary		Login
+//	@Description	Login by json
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		dto.LoginUserRequest	true	"Login user request body"
+//	@Success		200		{object}	dto.NewUserResponse
+//	@Failure		422		{object}	errs.MessageErrData
+//	@Failure		400		{object}	errs.MessageErrData
+//	@Router			/users/login [post]
 func (u *userHandler) LoginUser(ctx *gin.Context) {
 	var requestBody dto.LoginUserRequest
 
@@ -78,6 +90,19 @@ func (u *userHandler) LoginUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, token)
 }
 
+// UpdateUser godoc
+//
+//	@Summary		Update a user
+//	@Description	Update a user by json
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		dto.UpdateUserRequest	true	"Update a user request body"
+//	@Success		200		{object}	dto.UpdateUserResponse
+//	@Failure		401		{object}	errs.MessageErrData
+//	@Failure		422		{object}	errs.MessageErrData
+//	@Failure		400		{object}	errs.MessageErrData
+//	@Router			/users/update-account [put]
 func (u *userHandler) UpdateUser(ctx *gin.Context) {
 	var requestBody dto.UpdateUserRequest
 
@@ -108,6 +133,15 @@ func (u *userHandler) UpdateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, updatedUserResponse)
 }
 
+// DeleteUser godoc
+//
+//	@Summary		Delete a user
+//	@Description	Delete a user by JWT from header
+//	@Tags			users
+//	@Produce		json
+//	@Success		200		{object}	dto.DeleteUserResponse
+//	@Failure		401		{object}	errs.MessageErrData
+//	@Router			/users/delete-account [delete]
 func (u *userHandler) DeleteUser(ctx *gin.Context) {
 	// mustget = ambil data dari middleware authentication.
 	// Tp hasil returnnya hanya empty interface, jadi harus
