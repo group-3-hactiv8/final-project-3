@@ -5,6 +5,7 @@ import (
 	// _ "final-project-3/docs"
 	"final-project-3/handlers/http_handlers"
 	"final-project-3/middlewares"
+	"final-project-3/repositories/category_repository/category_pg"
 	"final-project-3/repositories/task_repository/task_pg"
 	"final-project-3/repositories/user_repository/user_pg"
 	"final-project-3/services"
@@ -49,6 +50,7 @@ func StartApp() *gin.Engine {
 	taskHandler := http_handlers.NewTaskHandler(taskService)
 
 	tasksRouter := router.Group("/tasks")
+	tasksRouter.Use(middlewares.Authentication())
 	{
 		tasksRouter.POST("/", taskHandler.CreateTask)
 		// tasksRouter.POST("/", taskHandler.ViewAllTasks)
@@ -56,6 +58,15 @@ func StartApp() *gin.Engine {
 		tasksRouter.PATCH("/update-status/:taskId", middlewares.Authentication(), taskHandler.UpdateStatus)
 		// tasksRouter.PATCH("/update-category/:taskId", middlewares.Authentication(), taskHandler.UpdateCategory)
 		// tasksRouter.DELETE("/:taskId", middlewares.Authentication(), taskHandler.Deletetask)
+	}
+
+	categoryRepo := category_pg.NewCategoryPG(db)
+	categoryService := services.NewCategoryService(categoryRepo)
+	categoryHandler := http_handlers.NewCategoryHandler(categoryService)
+
+	categoryRouter := router.Group("/category")
+	{
+		categoryRouter.POST("/create", categoryHandler.CreateCategory)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
