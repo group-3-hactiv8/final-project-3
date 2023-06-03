@@ -111,3 +111,51 @@ func (t *taskHandler) UpdateStatus(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, updatedTaskResponse)
 }
+
+// UpdateCategoryId godoc
+//
+//	@Summary		Update CategoryId of a task
+//	@Description	Update CategoryId of a task by json
+//	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			task	body		dto.UpdateCategoryIdOfATasIdkRequest	true	"Update categoryId of task request body"
+//	@Param			taskId	path		uint									true	"Task ID request"
+//	@Success		200		{object}	dto.UpdateCategoryIdOfTaskIdResponse
+//	@Failure		401		{object}	errs.MessageErrData
+//	@Failure		400		{object}	errs.MessageErrData
+//	@Failure		422		{object}	errs.MessageErrData
+//	@Failure		500		{object}	errs.MessageErrData
+//	@Router			/tasks/update-category/{taskId} [patch]
+func (t *taskHandler) UpdateCategoryIdOfTask(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Param("taskId"))
+	if err != nil {
+		idError := errs.NewBadRequest("Invalid ID format")
+		ctx.JSON(idError.StatusCode(), idError)
+		return
+	}
+
+	var requestBody dto.UpdateCategoryIdOfATasIdkRequest
+
+	err = ctx.ShouldBindJSON(&requestBody)
+	if err != nil {
+		newError := errs.NewUnprocessableEntity(err.Error())
+		ctx.JSON(newError.StatusCode(), newError)
+		return
+	}
+
+	err2 := requestBody.ValidateStruct()
+	if err2 != nil {
+		ctx.JSON(err2.StatusCode(), err2)
+		return
+	}
+
+	updatedTaskResponse, err3 := t.taskService.UpdateCategoryIdOfTask(id, &requestBody)
+
+	if err3 != nil {
+		ctx.JSON(err3.StatusCode(), err3)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, updatedTaskResponse)
+}

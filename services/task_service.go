@@ -9,6 +9,7 @@ import (
 type TaskService interface {
 	CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto.NewTaskResponse, errs.MessageErr)
 	UpdateStatus(id int, payload *dto.UpdateStatusOfATaskRequest) (*dto.UpdateTaskResponse, errs.MessageErr)
+	UpdateCategoryIdOfTask(id int, payload *dto.UpdateCategoryIdOfATasIdkRequest) (*dto.UpdateCategoryIdOfTaskIdResponse, errs.MessageErr)
 }
 
 type taskService struct {
@@ -55,6 +56,32 @@ func (t *taskService) UpdateStatus(id int, payload *dto.UpdateStatusOfATaskReque
 	}
 
 	response := &dto.UpdateTaskResponse{
+		ID:          updatedTask.ID,
+		Title:       updatedTask.Title,
+		Description: updatedTask.Description,
+		Status:      updatedTask.Status,
+		UserId:      updatedTask.UserId,
+		CategoryId:  updatedTask.CategoryId,
+		UpdatedAt:   updatedTask.UpdatedAt,
+	}
+
+	return response, nil
+}
+
+func (t *taskService) UpdateCategoryIdOfTask(id int, payload *dto.UpdateCategoryIdOfATasIdkRequest) (*dto.UpdateCategoryIdOfTaskIdResponse, errs.MessageErr) {
+	task := payload.TaskRequestCategoryToModel()
+	if id < 1 {
+		idError := errs.NewBadRequest("Task ID value must be positive")
+		return nil, idError
+	}
+	task.ID = uint(id)
+
+	updatedTask, err := t.taskRepo.UpdateCategoryIdOfTask(task)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &dto.UpdateCategoryIdOfTaskIdResponse{
 		ID:          updatedTask.ID,
 		Title:       updatedTask.Title,
 		Description: updatedTask.Description,

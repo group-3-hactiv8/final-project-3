@@ -56,7 +56,7 @@ func StartApp() *gin.Engine {
 		// tasksRouter.POST("/", taskHandler.ViewAllTasks)
 		// tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTitleAndDesc)
 		tasksRouter.PATCH("/update-status/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateStatus)
-		// tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategory)
+		tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategoryIdOfTask)
 		// tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.Deletetask)
 	}
 
@@ -65,8 +65,12 @@ func StartApp() *gin.Engine {
 	categoryHandler := http_handlers.NewCategoryHandler(categoryService)
 
 	categoryRouter := router.Group("/category")
+	
 	{
-		categoryRouter.POST("/create", categoryHandler.CreateCategory)
+		categoryRouter.POST("/", middlewares.Authentication(), categoryHandler.CreateCategory)
+		categoryRouter.PATCH("/:categoryId", middlewares.Authentication(), categoryHandler.UpdateCategory)
+		categoryRouter.GET("/", categoryHandler.GetAllCategory)
+		categoryRouter.DELETE("/:categoryId", middlewares.Authentication(), categoryHandler.DeleteCategory)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

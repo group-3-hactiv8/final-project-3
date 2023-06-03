@@ -5,6 +5,8 @@ import (
 	"final-project-3/models"
 	"net/http"
 	"strconv"
+	"fmt"
+	"errors"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -51,3 +53,43 @@ func TaskAuthorization() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+
+func CategoryAuthorization() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		db := database.GetPostgresInstance()
+
+		categoryId, err := strconv.Atoi(c.Param("categoryId"))
+		if err != nil {
+			badRequestError := fmt.Errorf("Invalid Category ID: %v", err)
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": badRequestError.Error()})
+			return
+		}
+
+		// userData, ok := c.Get("userData").(jwt.MapClaims)
+		userData, ok := c.MustGet("userData").(jwt.MapClaims)
+		if !ok {
+			unauthorizedError := errors.New("Unauthorized access")
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": unauthorizedError.Error()})
+			return
+		}
+		userID := uint(userData["id"].(float64))
+		requestedCategory := &models.Category{}
+
+		err = db.First(requestedCategory, "id = ?", categoryId).Error
+		if err != nil {
+			notFoundError := fmt.Errorf("Category not found: %v", err)
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": notFoundError.Error()})
+			return
+		}
+
+		if requestedCategory.ID != userID {
+			unauthorizedError := errors.New("You are not allowed to access this Category")
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": unauthorizedError.Error()})
+			return
+		}
+
+		c.Next()
+	}
+}
+
