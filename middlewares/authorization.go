@@ -3,6 +3,7 @@ package middlewares
 import (
 	"final-project-3/database"
 	"final-project-3/models"
+	"final-project-3/repositories/user_repository/user_pg"
 	"net/http"
 	"strconv"
 
@@ -44,6 +45,33 @@ func TaskAuthorization() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"error":   "Unauthorized",
 				"message": "You are not allowed to access this task",
+			})
+			return
+		}
+
+		c.Next()
+	}
+}
+
+func CategoryAuthorization() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		db := database.GetPostgresInstance()
+		userData := c.MustGet("userData").(jwt.MapClaims)
+		userId := uint(userData["id"].(float64))
+		initialUser := &models.User{}
+		initialUser.ID = userId
+
+		userRepo := user_pg.NewUserPG(db)
+		userRepo.GetUserByID(initialUser)
+		// abis di Get, objek initialUser akan terupdate,
+		// smua attribute nya akan terisi.
+
+		// user nya fix ada karna udh di cek di authentication,
+		// tp cek dulu role nya "admin" bukan?
+		if initialUser.Role != "admin" {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"error":   "Unauthorized",
+				"message": "You are not allowed to access this category feature",
 			})
 			return
 		}
