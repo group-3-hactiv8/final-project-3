@@ -12,12 +12,3 @@ type Task struct {
 	CategoryId  uint `json:"category_id"`
 	Category    Category
 }
-
-// func (sc *SocialMedia) BeforeCreate(tx *gorm.DB) error {
-// 	_, err := govalidator.ValidateStruct(sc)
-
-// 	if err != nil {
-// 		return errs.NewUnprocessableEntity(err.Error())
-// 	}
-// 	return nil
-// }
