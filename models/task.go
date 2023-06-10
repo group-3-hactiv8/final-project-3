@@ -7,8 +7,8 @@ type Task struct {
 	Title       string `gorm:"not null" json:"title"`
 	Description string `gorm:"not null" json:"description"`
 	Status      bool   `json:"status"`
-	UserId      uint   `json:"user_id"`
+	UserId      uint   `gorm:"not null" json:"user_id"`
 	User        User
-	CategoryId  uint `json:"category_id"`
+	CategoryId  uint `gorm:"not null" json:"category_id"`
 	Category    Category
 }
