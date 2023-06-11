@@ -3,10 +3,10 @@ package middlewares
 import (
 	"final-project-3/database"
 	"final-project-3/models"
+	"final-project-3/repositories/user_repository/user_pg"
 	"net/http"
 	"strconv"
-	"fmt"
-	"errors"
+	
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -54,42 +54,29 @@ func TaskAuthorization() gin.HandlerFunc {
 	}
 }
 
-
 func CategoryAuthorization() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		db := database.GetPostgresInstance()
+		userData := c.MustGet("userData").(jwt.MapClaims)
+		userId := uint(userData["id"].(float64))
+		initialUser := &models.User{}
+		initialUser.ID = userId
 
-		categoryId, err := strconv.Atoi(c.Param("categoryId"))
-		if err != nil {
-			badRequestError := fmt.Errorf("Invalid Category ID: %v", err)
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": badRequestError.Error()})
-			return
-		}
+		userRepo := user_pg.NewUserPG(db)
+		userRepo.GetUserByID(initialUser)
+		// abis di Get, objek initialUser akan terupdate,
+		// smua attribute nya akan terisi.
 
-		// userData, ok := c.Get("userData").(jwt.MapClaims)
-		userData, ok := c.MustGet("userData").(jwt.MapClaims)
-		if !ok {
-			unauthorizedError := errors.New("Unauthorized access")
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": unauthorizedError.Error()})
-			return
-		}
-		userID := uint(userData["id"].(float64))
-		requestedCategory := &models.Category{}
-
-		err = db.First(requestedCategory, "id = ?", categoryId).Error
-		if err != nil {
-			notFoundError := fmt.Errorf("Category not found: %v", err)
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": notFoundError.Error()})
-			return
-		}
-
-		if requestedCategory.ID != userID {
-			unauthorizedError := errors.New("You are not allowed to access this Category")
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": unauthorizedError.Error()})
+		// user nya fix ada karna udh di cek di authentication,
+		// tp cek dulu role nya "admin" bukan?
+		if initialUser.Role != "admin" {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"error":   "Unauthorized",
+				"message": "You are not allowed to access this category feature",
+			})
 			return
 		}
 
 		c.Next()
 	}
 }
-

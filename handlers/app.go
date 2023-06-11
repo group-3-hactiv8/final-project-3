@@ -65,13 +65,13 @@ func StartApp() *gin.Engine {
 	categoryHandler := http_handlers.NewCategoryHandler(categoryService)
 
 	categoryRouter := router.Group("/category")
-	
 	{
-		categoryRouter.POST("/", middlewares.Authentication(), categoryHandler.CreateCategory)
-		categoryRouter.PATCH("/:categoryId", middlewares.Authentication(), categoryHandler.UpdateCategory)
+		categoryRouter.POST("/", middlewares.Authentication(), middlewares.CategoryAuthorization(), categoryHandler.CreateCategory)
 		categoryRouter.GET("/", categoryHandler.GetAllCategory)
-		categoryRouter.DELETE("/:categoryId", middlewares.Authentication(), categoryHandler.DeleteCategory)
+		categoryRouter.PATCH("/:categoryId", middlewares.Authentication(),  middlewares.CategoryAuthorization(), categoryHandler.UpdateCategory)
+		categoryRouter.DELETE("/:categoryId", middlewares.Authentication(),  middlewares.CategoryAuthorization(), categoryHandler.DeleteCategory)
 	}
+	
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 

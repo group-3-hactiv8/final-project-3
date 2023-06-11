@@ -83,13 +83,13 @@ func (c *categoryHandler) GetAllCategory(ctx *gin.Context) {
 //	@Tags			category
 //	@Accept			json
 //	@Produce		json
-//	@Param			task		body		dto.UpdateCategoryRequest	true	"Update category request body"
-//	@Param			categoryId	path		uint						true	"category ID request"
-//	@Success		200			{object}	dto.UpdateCategoryResponse
-//	@Failure		401			{object}	errs.MessageErrData
-//	@Failure		400			{object}	errs.MessageErrData
-//	@Failure		422			{object}	errs.MessageErrData
-//	@Failure		500			{object}	errs.MessageErrData
+//	@Param			category		body		dto.UpdateCategoryRequest	true	"Update category request body"
+//	@Param			categoryId		path		uint						true	"category ID request"
+//	@Success		200				{object}	dto.UpdateCategoryResponse
+//	@Failure		401				{object}	errs.MessageErrData
+//	@Failure		400				{object}	errs.MessageErrData
+//	@Failure		422				{object}	errs.MessageErrData
+//	@Failure		500				{object}	errs.MessageErrData
 //	@Router			/category/{categoryId} [patch]
 func (c *categoryHandler) UpdateCategory(ctx *gin.Context) {
 	
