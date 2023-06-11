@@ -144,6 +144,13 @@ func (t *taskHandler) UpdateCategoryIdOfTask(ctx *gin.Context) {
 		return
 	}
 
+	if requestBody.CategoryId == 0 {
+		errorMsg := "Category ID is required"
+		categoryError := errs.NewBadRequest(errorMsg)
+		ctx.JSON(categoryError.StatusCode(), categoryError)
+		return
+	}
+
 	err2 := requestBody.ValidateStruct()
 	if err2 != nil {
 		ctx.JSON(err2.StatusCode(), err2)
