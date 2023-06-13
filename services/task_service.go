@@ -3,6 +3,7 @@ package services
 import (
 	"final-project-3/dto"
 	"final-project-3/pkg/errs"
+	"final-project-3/repositories/category_repository"
 	"final-project-3/repositories/task_repository"
 )
 
@@ -13,11 +14,12 @@ type TaskService interface {
 }
 
 type taskService struct {
-	taskRepo task_repository.TaskRepository
+	taskRepo     task_repository.TaskRepository
+	categoryRepo category_repository.CategoryRepository
 }
 
-func NewTaskService(taskRepo task_repository.TaskRepository) TaskService {
-	return &taskService{taskRepo: taskRepo}
+func NewTaskService(taskRepo task_repository.TaskRepository, categoryRepo category_repository.CategoryRepository) TaskService {
+	return &taskService{taskRepo: taskRepo, categoryRepo: categoryRepo}
 }
 
 func (t *taskService) CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto.NewTaskResponse, errs.MessageErr) {
@@ -75,6 +77,11 @@ func (t *taskService) UpdateCategoryIdOfTask(id int, payload *dto.UpdateCategory
 		return nil, idError
 	}
 	task.ID = uint(id)
+
+	_, err := t.categoryRepo.GetCategoryById(task.CategoryId)
+	if err != nil {
+		return nil, err
+	}
 
 	updatedTask, err := t.taskRepo.UpdateCategoryIdOfTask(task)
 	if err != nil {
