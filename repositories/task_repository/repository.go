@@ -7,5 +7,9 @@ import (
 
 type TaskRepository interface {
 	CreateTask(task *models.Task) (*models.Task, errs.MessageErr)
+	GetAllTasks() ([]models.Task, errs.MessageErr)
+	GetTaskByID(id uint) (*models.Task, errs.MessageErr)
 	UpdateTask(task *models.Task) (*models.Task, errs.MessageErr)
+	UpdateCategoryIdOfTask(task *models.Task) (*models.Task, errs.MessageErr)
+	DeleteTask(id uint) errs.MessageErr
 }

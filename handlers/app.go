@@ -45,29 +45,31 @@ func StartApp() *gin.Engine {
 		usersRouter.DELETE("/delete-account", middlewares.Authentication(), userHandler.DeleteUser)
 	}
 
+	categoryRepo := category_pg.NewCategoryPG(db)
+	categoryService := services.NewCategoryService(categoryRepo)
+	categoryHandler := http_handlers.NewCategoryHandler(categoryService)
+
+	categoryRouter := router.Group("/category")
+	{
+		categoryRouter.POST("/", middlewares.Authentication(), middlewares.CategoryAuthorization(), categoryHandler.CreateCategory)
+		categoryRouter.GET("/", categoryHandler.GetAllCategory)
+		categoryRouter.PATCH("/:categoryId", middlewares.Authentication(),  middlewares.CategoryAuthorization(), categoryHandler.UpdateCategory)
+		categoryRouter.DELETE("/:categoryId", middlewares.Authentication(),  middlewares.CategoryAuthorization(), categoryHandler.DeleteCategory)
+	}
+	
 	taskRepo := task_pg.NewTaskPG(db)
-	taskService := services.NewTaskService(taskRepo)
+	taskService := services.NewTaskService(taskRepo, categoryRepo)
 	taskHandler := http_handlers.NewTaskHandler(taskService)
 
 	tasksRouter := router.Group("/tasks")
 	tasksRouter.Use(middlewares.Authentication())
 	{
 		tasksRouter.POST("/", taskHandler.CreateTask)
-		// tasksRouter.POST("/", taskHandler.ViewAllTasks)
-		// tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTitleAndDesc)
+		tasksRouter.GET("/", taskHandler.GetAllTasks)
+		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTitleAndDesc)
 		tasksRouter.PATCH("/update-status/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateStatus)
-		// tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategory)
-		// tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.Deletetask)
-	}
-
-	categoryRepo := category_pg.NewCategoryPG(db)
-	categoryService := services.NewCategoryService(categoryRepo)
-	categoryHandler := http_handlers.NewCategoryHandler(categoryService)
-
-	categoryRouter := router.Group("/category")
-	categoryRouter.Use(middlewares.Authentication())
-	{
-		categoryRouter.POST("/create", middlewares.CategoryAuthorization(), categoryHandler.CreateCategory)
+		tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategoryIdOfTask)
+		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

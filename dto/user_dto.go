@@ -97,3 +97,9 @@ type UpdateUserResponse struct {
 type DeleteUserResponse struct {
 	Message string `json:"message"`
 }
+
+type UserData struct {
+	ID       uint   `json:"id"`
+	Email    string `json:"email"`
+	FullName string `json:"full_name"`
+}
