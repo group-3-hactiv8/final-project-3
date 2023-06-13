@@ -45,3 +45,20 @@ func (t *taskPG) UpdateTask(task *models.Task) (*models.Task, errs.MessageErr) {
 
 	return task, nil
 }
+
+func (t *taskPG) UpdateCategoryIdOfTask(task *models.Task) (*models.Task, errs.MessageErr) {
+	err := t.db.Model(task).Updates(task).Error
+
+	if err != nil {
+		err2 := errs.NewBadRequest(err.Error())
+		return nil, err2
+	}
+
+	err = t.db.Where("id = ?", task.ID).Take(&task).Error
+	if err != nil {
+		err2 := errs.NewInternalServerError(err.Error())
+		return nil, err2
+	}
+
+	return task, nil
+}

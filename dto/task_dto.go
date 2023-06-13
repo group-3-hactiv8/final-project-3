@@ -72,3 +72,34 @@ type UpdateTaskResponse struct {
 	CategoryId  uint      `json:"category_id"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
+
+type UpdateCategoryIdOfATasIdkRequest struct {
+	CategoryId  uint   `json:"category_id" valid:"required~Your Category ID is required"`
+}
+
+func (t *UpdateCategoryIdOfATasIdkRequest) ValidateStruct() errs.MessageErr {
+	_, err := govalidator.ValidateStruct(t)
+
+	if err != nil {
+		return errs.NewBadRequest(err.Error())
+	}
+
+	return nil
+}
+
+func (t *UpdateCategoryIdOfATasIdkRequest) TaskRequestCategoryToModel() *models.Task {
+	return &models.Task{
+		CategoryId: t.CategoryId,
+	}
+}
+
+type UpdateCategoryIdOfTaskIdResponse struct {
+	ID          uint      `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Status      bool      `json:"status"`
+	UserId      uint      `json:"user_id"`
+	CategoryId  uint      `json:"category_id"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
