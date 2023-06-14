@@ -12,9 +12,11 @@ import (
 const (
 	host     = "localhost"
 	user     = "postgres"
-	password = "postgres" // password database local 
-	dbPort   = 5432      // port db local 
-	dbname   = "final-project-3"
+	password = "postgres"
+	// password = "santoso" // password database local milik rakha
+	dbPort = 5432
+	// dbPort = 5433 // port db local rakha
+	dbname = "final-project-3"
 )
 
 var (

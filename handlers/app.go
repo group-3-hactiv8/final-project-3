@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"final-project-3/database"
-	// _ "final-project-3/docs"
+	_ "final-project-3/docs"
 	"final-project-3/handlers/http_handlers"
 	"final-project-3/middlewares"
 	"final-project-3/repositories/category_repository/category_pg"
@@ -53,20 +53,20 @@ func StartApp() *gin.Engine {
 	{
 		categoryRouter.POST("/", middlewares.Authentication(), middlewares.CategoryAuthorization(), categoryHandler.CreateCategory)
 		categoryRouter.GET("/", categoryHandler.GetAllCategory)
-		categoryRouter.PATCH("/:categoryId", middlewares.Authentication(),  middlewares.CategoryAuthorization(), categoryHandler.UpdateCategory)
-		categoryRouter.DELETE("/:categoryId", middlewares.Authentication(),  middlewares.CategoryAuthorization(), categoryHandler.DeleteCategory)
+		categoryRouter.PATCH("/:categoryId", middlewares.Authentication(), middlewares.CategoryAuthorization(), categoryHandler.UpdateCategory)
+		categoryRouter.DELETE("/:categoryId", middlewares.Authentication(), middlewares.CategoryAuthorization(), categoryHandler.DeleteCategory)
 	}
-	
+
 	taskRepo := task_pg.NewTaskPG(db)
-	taskService := services.NewTaskService(taskRepo, categoryRepo)
+	taskService := services.NewTaskService(taskRepo, categoryRepo, userRepo)
 	taskHandler := http_handlers.NewTaskHandler(taskService)
 
 	tasksRouter := router.Group("/tasks")
 	tasksRouter.Use(middlewares.Authentication())
 	{
 		tasksRouter.POST("/", taskHandler.CreateTask)
-		tasksRouter.GET("/", taskHandler.GetAllTasks)
-		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTitleAndDesc)
+		tasksRouter.GET("/", middlewares.Authentication(), taskHandler.GetAllTasks)
+		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTask)
 		tasksRouter.PATCH("/update-status/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateStatus)
 		tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategoryIdOfTask)
 		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)

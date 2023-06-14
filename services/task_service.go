@@ -19,10 +19,12 @@ type TaskService interface {
 
 type taskService struct {
 	taskRepo     task_repository.TaskRepository
+	categoryRepo category_repository.CategoryRepository
+	userRepo     user_repository.UserRepository
 }
 
-func NewTaskService(taskRepo task_repository.TaskRepository, categoryRepo category_repository.CategoryRepository) TaskService {
-	return &taskService{taskRepo: taskRepo, categoryRepo: categoryRepo, userRepo: userRepo}
+func NewTaskService(taskRepo task_repository.TaskRepository, categoryRepo category_repository.CategoryRepository, userRepo user_repository.UserRepository) TaskService {
+	return &taskService{taskRepo, categoryRepo, userRepo}
 }
 
 func (t *taskService) CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto.NewTaskResponse, errs.MessageErr) {
@@ -55,7 +57,7 @@ func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr)
 
 	response := []dto.GetAllTasksResponse{}
 	for _, task := range tasks {
-		user, err := t.userRepo.GetUserByID(task.UserId)
+		err := t.userRepo.GetUserByID(&task.User)
 		if err != nil {
 			return nil, err
 		}
@@ -68,9 +70,9 @@ func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr)
 			CategoryID:  task.CategoryId,
 			CreatedAt:   task.CreatedAt,
 			User: dto.UserData{
-				ID:       user.ID,
-				Email:    user.Email,
-				FullName: user.FullName,
+				ID:       task.User.ID,
+				Email:    task.User.Email,
+				FullName: task.User.FullName,
 			},
 		})
 	}
@@ -84,11 +86,11 @@ func (t *taskService) UpdateTask(id uint, payload *dto.UpdateTaskRequest) (*dto.
 		return nil, err
 	}
 
-	newTask := payload.TaskRequestToModel()
+	newTask := payload.ToEntity()
 
-	updatedTask, err2 := t.taskRepo.UpdateTask(oldTask, newTask)
-	if err2 != nil {
-		return nil, err2
+	updatedTask, err := t.taskRepo.UpdateTask(newTask, oldTask)
+	if err != nil {
+		return nil, err
 	}
 
 	response := &dto.UpdateTaskResponse{
@@ -104,6 +106,7 @@ func (t *taskService) UpdateTask(id uint, payload *dto.UpdateTaskRequest) (*dto.
 	return response, nil
 }
 
+
 func (t *taskService) UpdateStatus(id int, payload *dto.UpdateStatusOfATaskRequest) (*dto.UpdateTaskResponse, errs.MessageErr) {
 	task := payload.TaskRequestToModel()
 	if id < 1 {
@@ -112,7 +115,7 @@ func (t *taskService) UpdateStatus(id int, payload *dto.UpdateStatusOfATaskReque
 	}
 	task.ID = uint(id)
 
-	updatedTask, err := t.taskRepo.UpdateTask(task)
+	updatedTask, err := t.taskRepo.UpdateTask(task, task)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +163,6 @@ func (t *taskService) UpdateCategoryIdOfTask(id int, payload *dto.UpdateCategory
 
 	return response, nil
 }
-
 func (t *taskService) DeleteTask(id uint) (*dto.DeleteTaskResponse, errs.MessageErr) {
 	if err := t.taskRepo.DeleteTask(id); err != nil {
 		return nil, err

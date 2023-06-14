@@ -63,7 +63,43 @@ func (t *taskHandler) CreateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, createdTaskResponse)
 
 }
+//iqbal
+func (t *taskHandler) GetAllTasks(ctx *gin.Context) {
+	tasks, err := t.taskService.GetAllTasks()
+	if err != nil {
+		ctx.JSON(err.StatusCode(), err)
+		return
+	}
 
+	ctx.JSON(http.StatusOK, tasks)
+}
+
+func (t *taskHandler) UpdateTask(ctx *gin.Context) {
+	taskID := ctx.Param("taskID")
+	taskIDUint, err := strconv.ParseUint(taskID, 10, 32)
+	if err != nil {
+		errValidation := errs.NewBadRequest("Task id should be in unsigned integer")
+		ctx.JSON(errValidation.StatusCode(), errValidation)
+		return
+	}
+
+	var reqBody dto.UpdateTaskRequest
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		errValidation := errs.NewUnprocessableEntity(err.Error())
+		ctx.JSON(errValidation.StatusCode(), errValidation)
+		return
+	}
+
+	updatedTask, errUpdate := t.taskService.UpdateTask(uint(taskIDUint), &reqBody)
+	if errUpdate != nil {
+		ctx.JSON(errUpdate.StatusCode(), errUpdate)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, updatedTask)
+}
+
+//iqbal
 // UpdateStatus godoc
 //
 //	@Summary		Update status of a task
@@ -166,44 +202,6 @@ func (t *taskHandler) UpdateCategoryIdOfTask(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, updatedTaskResponse)
 }
-
-
-func (t *taskHandler) GetAllTasks(ctx *gin.Context) {
-	tasks, err := t.taskService.GetAllTasks()
-	if err != nil {
-		ctx.JSON(err.StatusCode(), err)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, tasks)
-}
-
-
-func (t *taskHandler) UpdateTitleAndDesc(ctx *gin.Context) {
-	taskID := ctx.Param("taskID")
-	taskIDUint, err := strconv.ParseUint(taskID, 10, 32)
-	if err != nil {
-		errValidation := errs.NewBadRequest("Task id should be in unsigned integer")
-		ctx.JSON(errValidation.StatusCode(), errValidation)
-		return
-	}
-
-	var requestBody dto.UpdateTaskRequest
-	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
-		errValidation := errs.NewUnprocessableEntity(err.Error())
-		ctx.JSON(errValidation.StatusCode(), errValidation)
-		return
-	}
-
-	updatedTask, errUpdate := t.taskService.UpdateTask(uint(taskIDUint), &requestBody)
-	if errUpdate != nil {
-		ctx.JSON(errUpdate.StatusCode(), errUpdate)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, updatedTask)
-}
-
 
 func (t *taskHandler) DeleteTask(ctx *gin.Context) {
 	taskID := ctx.Param("taskID")

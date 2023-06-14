@@ -39,11 +39,11 @@ func (t *taskPG) GetAllTasks() ([]models.Task, errs.MessageErr) {
 	return tasks, nil
 }
 
-func (t *taskPG) GetAllTasksByCategoryID(categoryId uint) (
+func (t *taskPG) GetAllTasksByCategoryID(categoryID uint) (
 	[]models.Task, errs.MessageErr,
 ) {
 	var tasks []models.Task
-	if err := t.db.Find(&tasks, "category_id = ?", categoryId).Error; err != nil {
+	if err := t.db.Find(&tasks, "category_id = ?", categoryID).Error; err != nil {
 		log.Println("Error:", err.Error())
 		return nil, errs.NewInternalServerError("Failed to geet all task")
 	}
@@ -62,22 +62,14 @@ func (t *taskPG) GetTaskByID(id uint) (*models.Task, errs.MessageErr) {
 	return &task, nil
 }
 
-func (t *taskPG) UpdateTask(task *models.Task) (*models.Task, errs.MessageErr) {
-	err := t.db.Model(task).Updates(task).Error
-
-	if err != nil {
-		err2 := errs.NewBadRequest(err.Error())
-		return nil, err2
+func (t *taskPG) UpdateTask(oldTask *models.Task, newTask *models.Task) (*models.Task, errs.MessageErr) {
+	if err := t.db.Model(oldTask).Updates(newTask).Error; err != nil {
+		return nil, errs.NewInternalServerError(fmt.Sprintf("Failed to update task with id %d", oldTask.ID))
 	}
 
-	err = t.db.Where("id = ?", task.ID).Take(&task).Error
-	if err != nil {
-		err2 := errs.NewInternalServerError(err.Error())
-		return nil, err2
-	}
-
-	return task, nil
+	return oldTask, nil
 }
+
 
 func (t *taskPG) UpdateTaskStatus(id uint, newStatus bool) (*models.Task, errs.MessageErr) {
 	task, err := t.GetTaskByID(id)
@@ -111,7 +103,6 @@ func (t *taskPG) UpdateCategoryIdOfTask(task *models.Task) (*models.Task, errs.M
 
 	return task, nil
 }
-
 
 func (t *taskPG) DeleteTask(id uint) errs.MessageErr {
 	if err := t.db.Delete(&models.Task{}, id).Error; err != nil {
