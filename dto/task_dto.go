@@ -63,6 +63,29 @@ func (t *UpdateStatusOfATaskRequest) TaskRequestToModel() *models.Task {
 	}
 }
 
+type GetAllTasksResponse struct {
+	ID          uint      `json:"id"`
+	Title       string    `json:"title"`
+	Status      bool      `json:"status"`
+	Description string    `json:"description"`
+	UserID      uint      `json:"user_id"`
+	CategoryID  uint      `json:"category_id"`
+	CreatedAt   time.Time `json:"created_at"`
+	User        UserData  `json:"user"`
+}
+
+type UpdateTaskRequest struct {
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description" binding:"required"`
+}
+
+func (t *UpdateTaskRequest) ToEntity() *models.Task {
+	return &models.Task{
+		Title:       t.Title,
+		Description: t.Description,
+	}
+}
+
 type UpdateTaskResponse struct {
 	ID          uint      `json:"id"`
 	Title       string    `json:"title"`
@@ -71,8 +94,13 @@ type UpdateTaskResponse struct {
 	UserId      uint      `json:"user_id"`
 	CategoryId  uint      `json:"category_id"`
 	UpdatedAt   time.Time `json:"updated_at"`
+	User        UserData  `json:"user"`
 }
 
+type MessageErr struct {
+	Code    int
+	Message string
+}
 type UpdateCategoryIdOfATasIdkRequest struct {
 	CategoryId  uint   `json:"category_id" valid:"required~Your Category ID is required"`
 }
@@ -103,3 +131,14 @@ type UpdateCategoryIdOfTaskIdResponse struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+type UpdateTaskStatusRequest struct {
+	Status bool `json:"status"`
+}
+
+type UpdateTaskCategoryRequest struct {
+	CategoryID uint `json:"category_id"`
+}
+
+type DeleteTaskResponse struct {
+	Message string `json:"message"`
+}

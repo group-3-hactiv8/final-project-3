@@ -58,18 +58,18 @@ func StartApp() *gin.Engine {
 	}
 
 	taskRepo := task_pg.NewTaskPG(db)
-	taskService := services.NewTaskService(taskRepo, categoryRepo)
+	taskService := services.NewTaskService(taskRepo, categoryRepo, userRepo)
 	taskHandler := http_handlers.NewTaskHandler(taskService)
 
 	tasksRouter := router.Group("/tasks")
 	tasksRouter.Use(middlewares.Authentication())
 	{
 		tasksRouter.POST("/", taskHandler.CreateTask)
-		// tasksRouter.POST("/", taskHandler.ViewAllTasks)
-		// tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTitleAndDesc)
+		tasksRouter.GET("/", middlewares.Authentication(), taskHandler.GetAllTasks)
+		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTask)
 		tasksRouter.PATCH("/update-status/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateStatus)
 		tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategoryIdOfTask)
-		// tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.Deletetask)
+		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
@@ -77,3 +77,4 @@ func StartApp() *gin.Engine {
 	return router
 
 }
+//UpdateTitleAndDesc

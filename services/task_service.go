@@ -5,21 +5,26 @@ import (
 	"final-project-3/pkg/errs"
 	"final-project-3/repositories/category_repository"
 	"final-project-3/repositories/task_repository"
+	"final-project-3/repositories/user_repository"
 )
 
 type TaskService interface {
 	CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto.NewTaskResponse, errs.MessageErr)
+	GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr)
+	UpdateTask(id uint, payload *dto.UpdateTaskRequest) (*dto.UpdateTaskResponse, errs.MessageErr)
 	UpdateStatus(id int, payload *dto.UpdateStatusOfATaskRequest) (*dto.UpdateTaskResponse, errs.MessageErr)
 	UpdateCategoryIdOfTask(id int, payload *dto.UpdateCategoryIdOfATasIdkRequest) (*dto.UpdateCategoryIdOfTaskIdResponse, errs.MessageErr)
+	DeleteTask(id uint) (*dto.DeleteTaskResponse, errs.MessageErr)
 }
 
 type taskService struct {
 	taskRepo     task_repository.TaskRepository
 	categoryRepo category_repository.CategoryRepository
+	userRepo     user_repository.UserRepository
 }
 
-func NewTaskService(taskRepo task_repository.TaskRepository, categoryRepo category_repository.CategoryRepository) TaskService {
-	return &taskService{taskRepo: taskRepo, categoryRepo: categoryRepo}
+func NewTaskService(taskRepo task_repository.TaskRepository, categoryRepo category_repository.CategoryRepository, userRepo user_repository.UserRepository) TaskService {
+	return &taskService{taskRepo, categoryRepo, userRepo}
 }
 
 func (t *taskService) CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto.NewTaskResponse, errs.MessageErr) {
@@ -44,6 +49,64 @@ func (t *taskService) CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto
 	return response, nil
 }
 
+func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr) {
+	tasks, err := t.taskRepo.GetAllTasks()
+	if err != nil {
+		return nil, err
+	}
+
+	response := []dto.GetAllTasksResponse{}
+	for _, task := range tasks {
+		err := t.userRepo.GetUserByID(&task.User)
+		if err != nil {
+			return nil, err
+		}
+		response = append(response, dto.GetAllTasksResponse{
+			ID:          task.CategoryId,
+			Title:       task.Title,
+			Status:      task.Status,
+			Description: task.Description,
+			UserID:      task.UserId,
+			CategoryID:  task.CategoryId,
+			CreatedAt:   task.CreatedAt,
+			User: dto.UserData{
+				ID:       task.User.ID,
+				Email:    task.User.Email,
+				FullName: task.User.FullName,
+			},
+		})
+	}
+
+	return response, nil
+}
+
+func (t *taskService) UpdateTask(id uint, payload *dto.UpdateTaskRequest) (*dto.UpdateTaskResponse, errs.MessageErr) {
+	oldTask, err := t.taskRepo.GetTaskByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	newTask := payload.ToEntity()
+
+	updatedTask, err := t.taskRepo.UpdateTask(newTask, oldTask)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &dto.UpdateTaskResponse{
+		ID:          updatedTask.ID,
+		Title:       updatedTask.Title,
+		Description: updatedTask.Description,
+		Status:      updatedTask.Status,
+		UserId:      updatedTask.UserId,
+		CategoryId:  updatedTask.CategoryId,
+		UpdatedAt:   updatedTask.UpdatedAt,
+	}
+
+	return response, nil
+}
+
+
 func (t *taskService) UpdateStatus(id int, payload *dto.UpdateStatusOfATaskRequest) (*dto.UpdateTaskResponse, errs.MessageErr) {
 	task := payload.TaskRequestToModel()
 	if id < 1 {
@@ -52,7 +115,7 @@ func (t *taskService) UpdateStatus(id int, payload *dto.UpdateStatusOfATaskReque
 	}
 	task.ID = uint(id)
 
-	updatedTask, err := t.taskRepo.UpdateTask(task)
+	updatedTask, err := t.taskRepo.UpdateTask(task, task)
 	if err != nil {
 		return nil, err
 	}
@@ -96,6 +159,17 @@ func (t *taskService) UpdateCategoryIdOfTask(id int, payload *dto.UpdateCategory
 		UserId:      updatedTask.UserId,
 		CategoryId:  updatedTask.CategoryId,
 		UpdatedAt:   updatedTask.UpdatedAt,
+	}
+
+	return response, nil
+}
+func (t *taskService) DeleteTask(id uint) (*dto.DeleteTaskResponse, errs.MessageErr) {
+	if err := t.taskRepo.DeleteTask(id); err != nil {
+		return nil, err
+	}
+
+	response := &dto.DeleteTaskResponse{
+		Message: "Task has been successfully deleted",
 	}
 
 	return response, nil
