@@ -4,8 +4,8 @@ import (
 	"final-project-3/dto"
 	"final-project-3/pkg/errs"
 	"final-project-3/services"
-	"strconv"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,7 +48,7 @@ func (c *categoryHandler) CreateCategory(ctx *gin.Context) {
 		return
 	}
 
-	newCtyResponse, err3 := c.categoryService.CreateCategory(&requestBody) 
+	newCtyResponse, err3 := c.categoryService.CreateCategory(&requestBody)
 
 	if err3 != nil {
 		ctx.JSON(err2.StatusCode(), err3)
@@ -60,17 +60,17 @@ func (c *categoryHandler) CreateCategory(ctx *gin.Context) {
 // GetAllCategory godoc
 //
 //	@Summary		Get all category
-//	@Description	Get all products by json
-//	@Tags			products
+//	@Description	Get all category by json
+//	@Tags			category
 //	@Produce		json
-//	@Success		200		{object}	dto.AllProductsResponse
+//	@Success		200		{object}	dto.GetAllCategoryResponse
 //	@Failure		401		{object}	errs.MessageErrData
 //	@Failure		500		{object}	errs.MessageErrData
-//	@Router			/products [get]
+//	@Router			/category [get]
 func (c *categoryHandler) GetAllCategory(ctx *gin.Context) {
 	allCategories, err := c.categoryService.GetAllCategory()
 	if err != nil {
-		ctx.JSON(err.StatusCode(),err)
+		ctx.JSON(err.StatusCode(), err)
 		return
 	}
 	ctx.JSON(http.StatusOK, allCategories)
@@ -78,8 +78,8 @@ func (c *categoryHandler) GetAllCategory(ctx *gin.Context) {
 
 // UpdateCategory godoc
 //
-//	@Summary		Update a category 
-//	@Description	Update a category 
+//	@Summary		Update a category
+//	@Description	Update a category
 //	@Tags			category
 //	@Accept			json
 //	@Produce		json
@@ -92,7 +92,7 @@ func (c *categoryHandler) GetAllCategory(ctx *gin.Context) {
 //	@Failure		500				{object}	errs.MessageErrData
 //	@Router			/category/{categoryId} [patch]
 func (c *categoryHandler) UpdateCategory(ctx *gin.Context) {
-	
+
 	ctyId, err := strconv.Atoi(ctx.Param("categoryId"))
 	if err != nil {
 		idError := errs.NewBadRequest("Invalid ID format")

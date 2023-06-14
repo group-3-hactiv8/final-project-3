@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"final-project-3/database"
-	// _ "final-project-3/docs"
+	_ "final-project-3/docs"
 	"final-project-3/handlers/http_handlers"
 	"final-project-3/middlewares"
 	"final-project-3/repositories/category_repository/category_pg"
@@ -53,10 +53,10 @@ func StartApp() *gin.Engine {
 	{
 		categoryRouter.POST("/", middlewares.Authentication(), middlewares.CategoryAuthorization(), categoryHandler.CreateCategory)
 		categoryRouter.GET("/", categoryHandler.GetAllCategory)
-		categoryRouter.PATCH("/:categoryId", middlewares.Authentication(),  middlewares.CategoryAuthorization(), categoryHandler.UpdateCategory)
-		categoryRouter.DELETE("/:categoryId", middlewares.Authentication(),  middlewares.CategoryAuthorization(), categoryHandler.DeleteCategory)
+		categoryRouter.PATCH("/:categoryId", middlewares.Authentication(), middlewares.CategoryAuthorization(), categoryHandler.UpdateCategory)
+		categoryRouter.DELETE("/:categoryId", middlewares.Authentication(), middlewares.CategoryAuthorization(), categoryHandler.DeleteCategory)
 	}
-	
+
 	taskRepo := task_pg.NewTaskPG(db)
 	taskService := services.NewTaskService(taskRepo, categoryRepo)
 	taskHandler := http_handlers.NewTaskHandler(taskService)
