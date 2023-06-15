@@ -6,6 +6,7 @@ import (
 	"final-project-3/repositories/category_repository"
 	"final-project-3/repositories/task_repository"
 	"final-project-3/repositories/user_repository"
+	"fmt"
 )
 
 type TaskService interface {
@@ -30,6 +31,12 @@ func NewTaskService(taskRepo task_repository.TaskRepository, categoryRepo catego
 func (t *taskService) CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto.NewTaskResponse, errs.MessageErr) {
 	task := payload.TaskRequestToModel()
 	task.UserId = userId
+
+	_, err := t.categoryRepo.GetCategoryById(task.CategoryId)
+	if err != nil {
+		errNotFound := errs.NewNotFound(fmt.Sprintf("Category with ID %v not found", task.CategoryId))
+		return nil, errNotFound
+	}
 
 	createdTask, err := t.taskRepo.CreateTask(task)
 	if err != nil {
@@ -105,7 +112,6 @@ func (t *taskService) UpdateTask(id uint, payload *dto.UpdateTaskRequest) (*dto.
 
 	return response, nil
 }
-
 
 func (t *taskService) UpdateStatus(id int, payload *dto.UpdateStatusOfATaskRequest) (*dto.UpdateTaskResponse, errs.MessageErr) {
 	task := payload.TaskRequestToModel()
