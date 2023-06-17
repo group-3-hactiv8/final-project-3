@@ -66,7 +66,7 @@ func StartApp() *gin.Engine {
 	{
 		tasksRouter.POST("/", taskHandler.CreateTask)
 		tasksRouter.GET("/", middlewares.Authentication(), taskHandler.GetAllTasks)  //
-		tasksRouter.PUT("", middlewares.TaskAuthorization(), taskHandler.UpdateTask) //
+		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTask) //
 		tasksRouter.PATCH("/update-status/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateStatus)
 		tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategoryIdOfTask)
 		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)  // 
