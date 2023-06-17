@@ -12,3 +12,7 @@ type Task struct {
 	CategoryId  uint `gorm:"not null" json:"category_id"`
 	Category    Category
 }
+
+
+
+// task.UserID undefined (type models.Task has no field or method UserID)
