@@ -1,6 +1,10 @@
-basePath: /
 definitions:
   dto.DeleteCategoryResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.DeleteTaskResponse:
     properties:
       message:
         type: string
@@ -24,6 +28,25 @@ definitions:
         type: string
       updated_at:
         type: string
+    type: object
+  dto.GetAllTasksResponse:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: boolean
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserData'
+      user_id:
+        type: integer
     type: object
   dto.LoginUserRequest:
     properties:
@@ -185,6 +208,15 @@ definitions:
       updated_at:
         type: string
     type: object
+  dto.UserData:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+    type: object
   errs.MessageErrData:
     properties:
       error:
@@ -197,14 +229,8 @@ definitions:
         example: 400
         type: integer
     type: object
-host: localhost:8080
 info:
-  contact:
-    name: Swagger API Team
-  description: This is a sample server for ... .
-  termsOfService: http://swagger.io/terms/
-  title: MyGram API
-  version: "1.0"
+  contact: {}
 paths:
   /category:
     get:
@@ -331,6 +357,26 @@ paths:
       tags:
       - category
   /tasks:
+    get:
+      description: Get all task by json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetAllTasksResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Get all task
+      tags:
+      - task
     post:
       consumes:
       - application/json
@@ -364,6 +410,67 @@ paths:
       summary: Register a task
       tags:
       - tasks
+  /tasks/:taskId:
+    put:
+      consumes:
+      - application/json
+      description: Task a user by json
+      parameters:
+      - description: Update a task request body
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Task a user
+      tags:
+      - users
+  /tasks/{id}:
+    delete:
+      description: Delete a Task by param
+      parameters:
+      - description: Task ID request
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.DeleteTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Delete a Task
+      tags:
+      - task
   /tasks/update-category/{taskId}:
     patch:
       consumes:
