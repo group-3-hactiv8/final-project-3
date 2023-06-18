@@ -29,7 +29,7 @@ func NewUserHandler(userService services.UserService) *userHandler {
 //	@Success		201		{object}	dto.NewUserResponse
 //	@Failure		422		{object}	errs.MessageErrData
 //	@Failure		500		{object}	errs.MessageErrData
-//	@Router			/users [post]
+//	@Router			/users/register [post]
 func (u *userHandler) RegisterUser(ctx *gin.Context) {
 	var requestBody dto.NewUserRequest
 

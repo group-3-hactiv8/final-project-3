@@ -557,36 +557,6 @@ paths:
       summary: Update status of a task
       tags:
       - tasks
-  /users:
-    post:
-      consumes:
-      - application/json
-      description: Register a user by json
-      parameters:
-      - description: Create user request body
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/dto.NewUserRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.NewUserResponse'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/errs.MessageErrData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/errs.MessageErrData'
-      summary: Register a user
-      tags:
-      - users
   /users/delete-account:
     delete:
       description: Delete a user by JWT from header
@@ -632,6 +602,36 @@ paths:
           schema:
             $ref: '#/definitions/errs.MessageErrData'
       summary: Login
+      tags:
+      - users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a user by json
+      parameters:
+      - description: Create user request body
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NewUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.NewUserResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Register a user
       tags:
       - users
   /users/update-account:
