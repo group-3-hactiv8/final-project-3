@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   dto.DeleteCategoryResponse:
     properties:
@@ -229,8 +230,14 @@ definitions:
         example: 400
         type: integer
     type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    name: Swagger API Team
+  description: 'This is a server for Final Project 3: Kanban Board API.'
+  termsOfService: http://swagger.io/terms/
+  title: Kanban Board API
+  version: "1.0"
 paths:
   /category:
     get:
@@ -376,7 +383,7 @@ paths:
             $ref: '#/definitions/errs.MessageErrData'
       summary: Get all task
       tags:
-      - task
+      - tasks
     post:
       consumes:
       - application/json
@@ -443,7 +450,7 @@ paths:
             $ref: '#/definitions/errs.MessageErrData'
       summary: Task a user
       tags:
-      - users
+      - tasks
   /tasks/{id}:
     delete:
       description: Delete a Task by param
@@ -470,7 +477,7 @@ paths:
             $ref: '#/definitions/errs.MessageErrData'
       summary: Delete a Task
       tags:
-      - task
+      - tasks
   /tasks/update-category/{taskId}:
     patch:
       consumes:

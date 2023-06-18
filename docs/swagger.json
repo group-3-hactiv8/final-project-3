@@ -1,8 +1,16 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is a server for Final Project 3: Kanban Board API.",
+        "title": "Kanban Board API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Swagger API Team"
+        },
+        "version": "1.0"
     },
+    "host": "localhost:8080",
+    "basePath": "/",
     "paths": {
         "/category": {
             "get": {
@@ -199,7 +207,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "tasks"
                 ],
                 "summary": "Get all task",
                 "responses": {
@@ -284,7 +292,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "tasks"
                 ],
                 "summary": "Task a user",
                 "parameters": [
@@ -463,7 +471,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "tasks"
                 ],
                 "summary": "Delete a Task",
                 "parameters": [

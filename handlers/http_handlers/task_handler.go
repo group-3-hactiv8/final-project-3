@@ -63,11 +63,12 @@ func (t *taskHandler) CreateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, createdTaskResponse)
 
 }
+
 // GetAllTask godoc
 //
 //	@Summary		Get all task
 //	@Description	Get all task by json
-//	@Tags			task
+//	@Tags			tasks
 //	@Produce		json
 //	@Success		200		{object}	dto.GetAllTasksResponse
 //	@Failure		401		{object}	errs.MessageErrData
@@ -83,12 +84,11 @@ func (t *taskHandler) GetAllTasks(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, tasks)
 }
 
-
 // UpdateTask godoc
 //
 //	@Summary		Task a user
 //	@Description	Task a user by json
-//	@Tags			users
+//	@Tags			tasks
 //	@Accept			json
 //	@Produce		json
 //	@Param			user	body		dto.UpdateUserRequest	true	"Update a task request body"
@@ -127,7 +127,6 @@ func (t *taskHandler) UpdateTask(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, updatedTaskResponse)
 }
-
 
 // UpdateStatus godoc
 //
@@ -231,11 +230,12 @@ func (t *taskHandler) UpdateCategoryIdOfTask(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, updatedTaskResponse)
 }
+
 // DeleteTask	godoc
 //
 //	@Summary		Delete a Task
 //	@Description	Delete a Task by param
-//	@Tags			task
+//	@Tags			tasks
 //	@Produce		json
 //	@Param			taskId		 path		uint						true	"Task ID request"
 //	@Success		200			{object}	dto.DeleteTaskResponse
