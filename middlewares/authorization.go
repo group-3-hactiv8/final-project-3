@@ -6,7 +6,6 @@ import (
 	"final-project-3/repositories/user_repository/user_pg"
 	"net/http"
 	"strconv"
-	
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -29,13 +28,13 @@ func TaskAuthorization() gin.HandlerFunc {
 		userId := uint(userData["id"].(float64))
 		task := models.Task{}
 
-		// cek product yg dicari berdasarkan product id nya ada atau engga
+		// cek Task yg dicari berdasarkan Task id nya ada atau engga
 		err = db.Select("user_id").First(&task, uint(taskId)).Error
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 				"error":   "Not Found",
-				"message": "Product not found",
+				"message": "Task not found",
 			})
 			return
 		}
