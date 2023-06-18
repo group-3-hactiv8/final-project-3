@@ -43,7 +43,8 @@ func Authentication() gin.HandlerFunc {
 		userRepo := user_pg.NewUserPG(db)
 
 		// does a user exist with this id?
-		if errNotFound := userRepo.GetUserByID(initialUser); errNotFound != nil {
+		_, errNotFound := userRepo.GetUserByID(id)
+		if errNotFound != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error":   "Unauthenticated",
 				"message": "invalid token",
@@ -52,7 +53,16 @@ func Authentication() gin.HandlerFunc {
 		}
 
 		// if exist, is the email is the same with the one from the token?
-		if initialUser.Email != email {
+		user, err := userRepo.GetUserByID(id)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error":   "Unauthenticated",
+				"message": "invalid token",
+			})
+			return
+		}
+
+		if user.Email != email {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error":   "Unauthenticated",
 				"message": "invalid token",

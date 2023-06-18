@@ -75,11 +75,21 @@ type GetAllTasksResponse struct {
 }
 
 type UpdateTaskRequest struct {
-	Title       string `json:"title" binding:"required"`
-	Description string `json:"description" binding:"required"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }
 
-func (t *UpdateTaskRequest) ToEntity() *models.Task {
+func (t *UpdateTaskRequest) ValidateStruct() errs.MessageErr {
+	_, err := govalidator.ValidateStruct(t)
+
+	if err != nil {
+		return errs.NewBadRequest(err.Error())
+	}
+
+	return nil
+}
+
+func (t *UpdateTaskRequest) UpdateTaskRequestToModel() *models.Task {
 	return &models.Task{
 		Title:       t.Title,
 		Description: t.Description,
@@ -94,7 +104,6 @@ type UpdateTaskResponse struct {
 	UserId      uint      `json:"user_id"`
 	CategoryId  uint      `json:"category_id"`
 	UpdatedAt   time.Time `json:"updated_at"`
-	User        UserData  `json:"user"`
 }
 
 type MessageErr struct {

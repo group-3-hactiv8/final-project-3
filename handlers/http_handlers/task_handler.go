@@ -63,7 +63,16 @@ func (t *taskHandler) CreateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, createdTaskResponse)
 
 }
-//iqbal
+// GetAllTask godoc
+//
+//	@Summary		Get all task
+//	@Description	Get all task by json
+//	@Tags			task
+//	@Produce		json
+//	@Success		200		{object}	dto.GetAllTasksResponse
+//	@Failure		401		{object}	errs.MessageErrData
+//	@Failure		500		{object}	errs.MessageErrData
+//	@Router			/tasks [get]
 func (t *taskHandler) GetAllTasks(ctx *gin.Context) {
 	tasks, err := t.taskService.GetAllTasks()
 	if err != nil {
@@ -74,32 +83,52 @@ func (t *taskHandler) GetAllTasks(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, tasks)
 }
 
+
+// UpdateTask godoc
+//
+//	@Summary		Task a user
+//	@Description	Task a user by json
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		dto.UpdateUserRequest	true	"Update a task request body"
+//	@Success		200		{object}	dto.UpdateUserResponse
+//	@Failure		401		{object}	errs.MessageErrData
+//	@Failure		422		{object}	errs.MessageErrData
+//	@Failure		400		{object}	errs.MessageErrData
+//	@Router			/tasks/:taskId	 [put]
 func (t *taskHandler) UpdateTask(ctx *gin.Context) {
-	taskID := ctx.Param("taskID")
-	taskIDUint, err := strconv.ParseUint(taskID, 10, 32)
+	taskId, err := strconv.Atoi(ctx.Param("taskId"))
 	if err != nil {
-		errValidation := errs.NewBadRequest("Task id should be in unsigned integer")
-		ctx.JSON(errValidation.StatusCode(), errValidation)
+		idError := errs.NewBadRequest("Invalid ID format")
+		ctx.JSON(idError.StatusCode(), idError)
 		return
 	}
 
-	var reqBody dto.UpdateTaskRequest
-	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
-		errValidation := errs.NewUnprocessableEntity(err.Error())
-		ctx.JSON(errValidation.StatusCode(), errValidation)
+	var requestBody dto.UpdateTaskRequest
+
+	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
+		newError := errs.NewUnprocessableEntity(err.Error())
+		ctx.JSON(newError.StatusCode(), newError)
 		return
 	}
 
-	updatedTask, errUpdate := t.taskService.UpdateTask(uint(taskIDUint), &reqBody)
-	if errUpdate != nil {
-		ctx.JSON(errUpdate.StatusCode(), errUpdate)
+	err2 := requestBody.ValidateStruct()
+	if err2 != nil {
+		ctx.JSON(err2.StatusCode(), err2)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedTask)
+	updatedTaskResponse, err3 := t.taskService.UpdateTask(uint(taskId), &requestBody)
+	if err3 != nil {
+		ctx.JSON(err3.StatusCode(), err3)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, updatedTaskResponse)
 }
 
-//iqbal
+
 // UpdateStatus godoc
 //
 //	@Summary		Update status of a task
@@ -164,7 +193,7 @@ func (t *taskHandler) UpdateStatus(ctx *gin.Context) {
 //	@Failure		500		{object}	errs.MessageErrData
 //	@Router			/tasks/update-category/{taskId} [patch]
 func (t *taskHandler) UpdateCategoryIdOfTask(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("taskId"))
+	taskID, err := strconv.Atoi(ctx.Param("taskId"))
 	if err != nil {
 		idError := errs.NewBadRequest("Invalid ID format")
 		ctx.JSON(idError.StatusCode(), idError)
@@ -193,7 +222,7 @@ func (t *taskHandler) UpdateCategoryIdOfTask(ctx *gin.Context) {
 		return
 	}
 
-	updatedTaskResponse, err3 := t.taskService.UpdateCategoryIdOfTask(id, &requestBody)
+	updatedTaskResponse, err3 := t.taskService.UpdateCategoryIdOfTask(uint(taskID), &requestBody)
 
 	if err3 != nil {
 		ctx.JSON(err3.StatusCode(), err3)
@@ -202,17 +231,27 @@ func (t *taskHandler) UpdateCategoryIdOfTask(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, updatedTaskResponse)
 }
-
+// DeleteTask	godoc
+//
+//	@Summary		Delete a Task
+//	@Description	Delete a Task by param
+//	@Tags			task
+//	@Produce		json
+//	@Param			taskId		 path		uint						true	"Task ID request"
+//	@Success		200			{object}	dto.DeleteTaskResponse
+//	@Failure		401			{object}	errs.MessageErrData
+//	@Failure		400			{object}	errs.MessageErrData
+//	@Router			/tasks/{id} [delete]
 func (t *taskHandler) DeleteTask(ctx *gin.Context) {
-	taskID := ctx.Param("taskID")
-	taskIDUint, err := strconv.ParseUint(taskID, 10, 32)
+	taskId := ctx.Param("taskId")
+	taskIdUint, err := strconv.ParseUint(taskId, 10, 32)
 	if err != nil {
 		newError := errs.NewBadRequest("Task id should be in unsigned integer")
 		ctx.JSON(newError.StatusCode(), newError)
 		return
 	}
 
-	response, err2 := t.taskService.DeleteTask(uint(taskIDUint))
+	response, err2 := t.taskService.DeleteTask(uint(taskIdUint))
 	if err2 != nil {
 		ctx.JSON(err2.StatusCode(), err2)
 		return

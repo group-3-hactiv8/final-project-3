@@ -59,16 +59,19 @@ func CategoryAuthorization() gin.HandlerFunc {
 		db := database.GetPostgresInstance()
 		userData := c.MustGet("userData").(jwt.MapClaims)
 		userId := uint(userData["id"].(float64))
-		initialUser := &models.User{}
-		initialUser.ID = userId
 
 		userRepo := user_pg.NewUserPG(db)
-		userRepo.GetUserByID(initialUser)
-		// abis di Get, objek initialUser akan terupdate,
-		// smua attribute nya akan terisi.
+		initialUser, err := userRepo.GetUserByID(userId)
+		if err != nil {
+			// Handle error ketika mendapatkan user
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"error":   "Internal Server Error",
+				"message": "Failed to retrieve user data",
+			})
+			return
+		}
 
-		// user nya fix ada karna udh di cek di authentication,
-		// tp cek dulu role nya "admin" bukan?
+		// Cek role user, jika bukan "admin", berikan response Forbidden
 		if initialUser.Role != "admin" {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"error":   "Unauthorized",

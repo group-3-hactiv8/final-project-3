@@ -65,11 +65,11 @@ func StartApp() *gin.Engine {
 	tasksRouter.Use(middlewares.Authentication())
 	{
 		tasksRouter.POST("/", taskHandler.CreateTask)
-		tasksRouter.GET("/", middlewares.Authentication(), taskHandler.GetAllTasks)
-		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTask)
+		tasksRouter.GET("/", middlewares.Authentication(), taskHandler.GetAllTasks)  //
+		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTask) //
 		tasksRouter.PATCH("/update-status/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateStatus)
 		tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategoryIdOfTask)
-		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)
+		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)  // 
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
