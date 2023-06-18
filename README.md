@@ -34,7 +34,9 @@ Prinata Rakha Santoso
 - Tasks (Create, Update status of a task)
 
 Iqbal Hasanu Hamdani
-- Tasks (Get all, Update task's title and description, Delete)
+- Tasks (Get all) 
+- Tasks (Update task's title and description)
+- Tasks (Delete)
 
 Angga Anugerah Saputro
 - Categories (Create, Get all, Update, Delete)

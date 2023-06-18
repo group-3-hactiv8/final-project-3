@@ -1,0 +1,678 @@
+basePath: /
+definitions:
+  dto.DeleteCategoryResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.DeleteTaskResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.DeleteUserResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.GetAllCategoryResponse:
+    properties:
+      Tasks:
+        items:
+          $ref: '#/definitions/dto.TaskForGetAllCategoryResponse'
+        type: array
+      created_at:
+        type: string
+      id:
+        type: integer
+      type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.GetAllTasksResponse:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: boolean
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserData'
+      user_id:
+        type: integer
+    type: object
+  dto.LoginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.NewCategoryRequest:
+    properties:
+      type:
+        type: string
+    type: object
+  dto.NewCategoryResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      type:
+        type: string
+    type: object
+  dto.NewTaskRequest:
+    properties:
+      category_id:
+        type: integer
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  dto.NewTaskResponse:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: boolean
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dto.NewUserRequest:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.NewUserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+    type: object
+  dto.TaskForGetAllCategoryResponse:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dto.UpdateCategoryIdOfATasIdkRequest:
+    properties:
+      category_id:
+        type: integer
+    type: object
+  dto.UpdateCategoryIdOfTaskIdResponse:
+    properties:
+      category_id:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: boolean
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dto.UpdateCategoryRequest:
+    properties:
+      type:
+        type: string
+    type: object
+  dto.UpdateCategoryResponse:
+    properties:
+      id:
+        type: integer
+      type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.UpdateStatusOfATaskRequest:
+    properties:
+      status:
+        type: boolean
+    type: object
+  dto.UpdateTaskResponse:
+    properties:
+      category_id:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: boolean
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dto.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+    type: object
+  dto.UpdateUserResponse:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  dto.UserData:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+    type: object
+  errs.MessageErrData:
+    properties:
+      error:
+        example: BAD_REQUEST
+        type: string
+      message:
+        example: This is an error message
+        type: string
+      statusCode:
+        example: 400
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Swagger API Team
+  description: 'This is a server for Final Project 3: Kanban Board API.'
+  termsOfService: http://swagger.io/terms/
+  title: Kanban Board API
+  version: "1.0"
+paths:
+  /category:
+    get:
+      description: Get all category by json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetAllCategoryResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Get all category
+      tags:
+      - category
+    post:
+      consumes:
+      - application/json
+      description: Register a category by json
+      parameters:
+      - description: Create Category request body
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NewCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.NewCategoryResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Register a category
+      tags:
+      - category
+  /category/{categoryId}:
+    patch:
+      consumes:
+      - application/json
+      description: Update a category
+      parameters:
+      - description: Update category request body
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCategoryRequest'
+      - description: category ID request
+        in: path
+        name: categoryId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateCategoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Update a category
+      tags:
+      - category
+  /category/{id}:
+    delete:
+      description: Delete a Category by param
+      parameters:
+      - description: Category ID request
+        in: path
+        name: categoryId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.DeleteCategoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Delete a Category
+      tags:
+      - category
+  /tasks:
+    get:
+      description: Get all task by json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetAllTasksResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Get all task
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Register a task by json
+      parameters:
+      - description: Create task request body
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NewTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.NewTaskResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Register a task
+      tags:
+      - tasks
+  /tasks/:taskId:
+    put:
+      consumes:
+      - application/json
+      description: Task a user by json
+      parameters:
+      - description: Update a task request body
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Task a user
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      description: Delete a Task by param
+      parameters:
+      - description: Task ID request
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.DeleteTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Delete a Task
+      tags:
+      - tasks
+  /tasks/update-category/{taskId}:
+    patch:
+      consumes:
+      - application/json
+      description: Update CategoryId of a task by json
+      parameters:
+      - description: Update categoryId of task request body
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCategoryIdOfATasIdkRequest'
+      - description: Task ID request
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateCategoryIdOfTaskIdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Update CategoryId of a task
+      tags:
+      - tasks
+  /tasks/update-status/{taskId}:
+    patch:
+      consumes:
+      - application/json
+      description: Update status of a task by json
+      parameters:
+      - description: Update status of task request body
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateStatusOfATaskRequest'
+      - description: Task ID request
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Update status of a task
+      tags:
+      - tasks
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Register a user by json
+      parameters:
+      - description: Create user request body
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NewUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.NewUserResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Register a user
+      tags:
+      - users
+  /users/delete-account:
+    delete:
+      description: Delete a user by JWT from header
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.DeleteUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Delete a user
+      tags:
+      - users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login by json
+      parameters:
+      - description: Login user request body
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.NewUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Login
+      tags:
+      - users
+  /users/update-account:
+    put:
+      consumes:
+      - application/json
+      description: Update a user by json
+      parameters:
+      - description: Update a user request body
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Update a user
+      tags:
+      - users
+swagger: "2.0"

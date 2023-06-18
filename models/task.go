@@ -4,20 +4,15 @@ import "gorm.io/gorm"
 
 type Task struct {
 	gorm.Model
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Title       string `gorm:"not null" json:"title"`
+	Description string `gorm:"not null" json:"description"`
 	Status      bool   `json:"status"`
-	UserId      uint   `json:"user_id"`
+	UserId      uint   `gorm:"not null" json:"user_id"`
 	User        User
-	CategoryID  uint `json:"category_id"`
+	CategoryId  uint `gorm:"not null" json:"category_id"`
 	Category    Category
 }
 
-// func (sc *SocialMedia) BeforeCreate(tx *gorm.DB) error {
-// 	_, err := govalidator.ValidateStruct(sc)
 
-// 	if err != nil {
-// 		return errs.NewUnprocessableEntity(err.Error())
-// 	}
-// 	return nil
-// }
+
+// task.UserID undefined (type models.Task has no field or method UserID)
