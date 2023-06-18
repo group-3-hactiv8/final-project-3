@@ -56,37 +56,7 @@ func (t *taskService) CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto
 	return response, nil
 }
 
-// func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr) {
-// 	tasks, err := t.taskRepo.GetAllTasks()
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	response := []dto.GetAllTasksResponse{}
-// 	for _, task := range tasks {
-// 		err := t.userRepo.GetUserByID(&task.User)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		response = append(response, dto.GetAllTasksResponse{
-// 			ID:          task.CategoryId,
-// 			Title:       task.Title,
-// 			Status:      task.Status,
-// 			Description: task.Description,
-// 			UserID:      task.UserId,
-// 			CategoryID:  task.CategoryId,
-// 			CreatedAt:   task.CreatedAt,
-// 			User: dto.UserData{
-// 				ID:       task.User.ID,
-// 				Email:    task.User.Email,
-// 				FullName: task.User.FullName,
-// 			},
-// 		})
-// 	}
-
-//		return response, nil
-//	}
 func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr) {
 	tasks, err := t.taskRepo.GetAllTasks()
 	if err != nil {
@@ -213,3 +183,7 @@ func (t *taskService) DeleteTask(id uint) (*dto.DeleteTaskResponse, errs.Message
 	}
 	return deleteResponse, nil
 }
+
+
+
+
