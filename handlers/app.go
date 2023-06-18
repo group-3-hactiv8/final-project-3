@@ -16,9 +16,9 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 )
 
-// @title MyGram API
+// @title Kanban Board API
 // @version 1.0
-// @description This is a sample server for ... .
+// @description This is a server for Final Project 3: Kanban Board API.
 // @termsOfService http://swagger.io/terms/
 // @contact.name Swagger API Team
 // @host localhost:8080
@@ -65,11 +65,11 @@ func StartApp() *gin.Engine {
 	tasksRouter.Use(middlewares.Authentication())
 	{
 		tasksRouter.POST("/", taskHandler.CreateTask)
-		tasksRouter.GET("/", middlewares.Authentication(), taskHandler.GetAllTasks)  //
-		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTask) //
+		tasksRouter.GET("/", middlewares.Authentication(), taskHandler.GetAllTasks)
+		tasksRouter.PUT("/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateTask)
 		tasksRouter.PATCH("/update-status/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateStatus)
 		tasksRouter.PATCH("/update-category/:taskId", middlewares.TaskAuthorization(), taskHandler.UpdateCategoryIdOfTask)
-		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)  // 
+		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
@@ -77,4 +77,3 @@ func StartApp() *gin.Engine {
 	return router
 
 }
-//UpdateTitleAndDesc
