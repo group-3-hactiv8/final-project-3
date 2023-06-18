@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   dto.DeleteCategoryResponse:
     properties:
@@ -230,14 +229,8 @@ definitions:
         example: 400
         type: integer
     type: object
-host: localhost:8080
 info:
-  contact:
-    name: Swagger API Team
-  description: 'This is a server for Final Project 3: Kanban Board API.'
-  termsOfService: http://swagger.io/terms/
-  title: Kanban Board API
-  version: "1.0"
+  contact: {}
 paths:
   /category:
     get:

@@ -21,13 +21,19 @@ import (
 // @description This is a server for Final Project 3: Kanban Board API.
 // @termsOfService http://swagger.io/terms/
 // @contact.name Swagger API Team
-// @host localhost:8080
+// @host final-project-3-production-1fec.up.railway.app
 // @BasePath /
 func StartApp() *gin.Engine {
 	database.StartDB()
 	db := database.GetPostgresInstance()
 
 	router := gin.Default()
+
+	router.GET("/health-check-fp3", func (c *gin.Context){
+		c.JSON(200, gin.H{
+			"appName" : "kanbanBoard",
+		})
+	})
 
 	userRepo := user_pg.NewUserPG(db)
 	userService := services.NewUserService(userRepo)

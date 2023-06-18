@@ -1,16 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a server for Final Project 3: Kanban Board API.",
-        "title": "Kanban Board API",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "Swagger API Team"
-        },
-        "version": "1.0"
+        "contact": {}
     },
-    "host": "localhost:8080",
-    "basePath": "/",
     "paths": {
         "/category": {
             "get": {
