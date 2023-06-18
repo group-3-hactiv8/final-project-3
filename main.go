@@ -4,7 +4,7 @@ import (
 	"final-project-3/handlers"
 )
 
-const port = ":8080"
+const port = ":8000"
 
 func main() {
 	r := handlers.StartApp()
