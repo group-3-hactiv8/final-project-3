@@ -55,7 +55,6 @@ func (t *taskService) CreateTask(payload *dto.NewTaskRequest, userId uint) (*dto
 
 	return response, nil
 }
-//
 
 func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr) {
 	tasks, err := t.taskRepo.GetAllTasks()
@@ -65,7 +64,7 @@ func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr)
 
 	response := []dto.GetAllTasksResponse{}
 	for _, task := range tasks {
-		user, _ := t.userRepo.GetUserByID(task.UserId) 
+		user, _ := t.userRepo.GetUserByID(task.UserId)
 		response = append(response, dto.GetAllTasksResponse{
 			ID:          task.CategoryId,
 			Title:       task.Title,
@@ -84,8 +83,6 @@ func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr)
 
 	return response, nil
 }
-
-
 
 func (t *taskService) UpdateTask(id uint, payload *dto.UpdateTaskRequest) (*dto.UpdateTaskResponse, errs.MessageErr) {
 	taskUpdateRequest := payload.UpdateTaskRequestToModel()
@@ -118,6 +115,11 @@ func (t *taskService) UpdateStatus(id int, payload *dto.UpdateStatusOfATaskReque
 	}
 	task.ID = uint(id)
 
+	task, err := t.taskRepo.GetTaskByID(task.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	updatedTask, err := t.taskRepo.UpdateTask(task)
 	if err != nil {
 		return nil, err
@@ -144,7 +146,12 @@ func (t *taskService) UpdateCategoryIdOfTask(id uint, payload *dto.UpdateCategor
 	}
 	task.ID = uint(id)
 
-	_, err := t.categoryRepo.GetCategoryById(task.CategoryId)
+	task, err := t.taskRepo.GetTaskByID(task.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = t.categoryRepo.GetCategoryById(task.CategoryId)
 	if err != nil {
 		return nil, err
 	}
@@ -183,12 +190,3 @@ func (t *taskService) DeleteTask(id uint) (*dto.DeleteTaskResponse, errs.Message
 	}
 	return deleteResponse, nil
 }
-
-
-
-
-<<<<<<< iqbal
-=======
-	return response, nil
-}
->>>>>>> master
