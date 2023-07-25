@@ -2,14 +2,14 @@ package handlers
 
 import (
 	"final-project-3/database"
-	// _ "final-project-3/docs"
+	"final-project-3/docs"
 	"final-project-3/handlers/http_handlers"
 	"final-project-3/middlewares"
 	"final-project-3/repositories/category_repository/category_pg"
 	"final-project-3/repositories/task_repository/task_pg"
 	"final-project-3/repositories/user_repository/user_pg"
 	"final-project-3/services"
-	"final-project-3/docs"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -77,13 +77,10 @@ func StartApp() {
 	docs.SwaggerInfo.Title = "API Kanban Board"
 	docs.SwaggerInfo.Description = "Ini adalah server API Kanban Board."
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "localhost:8080"
-	// docs.SwaggerInfo.Host = "final-project-2-production-1503.up.railway.app/swagger/docs/index.html#/"
-	// docs.SwaggerInfo.Schemes = []string{"https","http"}
-	docs.SwaggerInfo.Schemes = []string{"http"}
+	docs.SwaggerInfo.Host = "final-project-2-production-1503.up.railway.app/swagger/docs/index.html#/"
+	docs.SwaggerInfo.Schemes = []string{"https", "http"}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	router.Run(PORT)
-
+	router.Run(":" + os.Getenv("PORT"))
 }
