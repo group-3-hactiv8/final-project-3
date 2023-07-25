@@ -66,7 +66,7 @@ func (t *taskService) GetAllTasks() ([]dto.GetAllTasksResponse, errs.MessageErr)
 	for _, task := range tasks {
 		user, _ := t.userRepo.GetUserByID(task.UserId)
 		response = append(response, dto.GetAllTasksResponse{
-			ID:          task.CategoryId,
+			ID:          task.ID,
 			Title:       task.Title,
 			Status:      task.Status,
 			Description: task.Description,
