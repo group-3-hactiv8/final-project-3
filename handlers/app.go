@@ -77,7 +77,7 @@ func StartApp() {
 	docs.SwaggerInfo.Title = "API Kanban Board"
 	docs.SwaggerInfo.Description = "Ini adalah server API Kanban Board."
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "final-project-3-production-1fec.up.railway.app/swagger/docs/index.html#/"
+	docs.SwaggerInfo.Host = "final-project-3-production-1fec.up.railway.app"
 	docs.SwaggerInfo.Schemes = []string{"https", "http"}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
