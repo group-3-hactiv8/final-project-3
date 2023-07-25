@@ -173,6 +173,13 @@ definitions:
       status:
         type: boolean
     type: object
+  dto.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
   dto.UpdateTaskResponse:
     properties:
       category_id:
@@ -235,6 +242,13 @@ paths:
   /category:
     get:
       description: Get all category by json
+      parameters:
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -264,6 +278,12 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.NewCategoryRequest'
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -287,6 +307,38 @@ paths:
       tags:
       - category
   /category/{categoryId}:
+    delete:
+      description: Delete a Category by param
+      parameters:
+      - description: Category ID request
+        in: path
+        name: categoryId
+        required: true
+        type: integer
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.DeleteCategoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Delete a Category
+      tags:
+      - category
     patch:
       consumes:
       - application/json
@@ -303,6 +355,12 @@ paths:
         name: categoryId
         required: true
         type: integer
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -329,36 +387,16 @@ paths:
       summary: Update a category
       tags:
       - category
-  /category/{id}:
-    delete:
-      description: Delete a Category by param
-      parameters:
-      - description: Category ID request
-        in: path
-        name: categoryId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.DeleteCategoryResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/errs.MessageErrData'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/errs.MessageErrData'
-      summary: Delete a Category
-      tags:
-      - category
   /tasks:
     get:
       description: Get all task by json
+      parameters:
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -388,6 +426,12 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.NewTaskRequest'
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -410,41 +454,7 @@ paths:
       summary: Register a task
       tags:
       - tasks
-  /tasks/:taskId:
-    put:
-      consumes:
-      - application/json
-      description: Task a user by json
-      parameters:
-      - description: Update a task request body
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpdateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.UpdateUserResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/errs.MessageErrData'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/errs.MessageErrData'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/errs.MessageErrData'
-      summary: Task a user
-      tags:
-      - tasks
-  /tasks/{id}:
+  /tasks/{taskId}:
     delete:
       description: Delete a Task by param
       parameters:
@@ -453,6 +463,12 @@ paths:
         name: taskId
         required: true
         type: integer
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -469,6 +485,50 @@ paths:
           schema:
             $ref: '#/definitions/errs.MessageErrData'
       summary: Delete a Task
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Task a user by json
+      parameters:
+      - description: Update a task request body
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTaskRequest'
+      - description: Task ID request
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errs.MessageErrData'
+      summary: Task a user
       tags:
       - tasks
   /tasks/update-category/{taskId}:
@@ -488,6 +548,12 @@ paths:
         name: taskId
         required: true
         type: integer
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -531,6 +597,12 @@ paths:
         name: taskId
         required: true
         type: integer
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -560,6 +632,13 @@ paths:
   /users/delete-account:
     delete:
       description: Delete a user by JWT from header
+      parameters:
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -646,6 +725,12 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.UpdateUserRequest'
+      - default: Bearer <Add your access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:

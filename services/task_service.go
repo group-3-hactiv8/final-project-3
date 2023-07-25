@@ -94,6 +94,11 @@ func (t *taskService) UpdateTask(id uint, payload *dto.UpdateTaskRequest) (*dto.
 		return nil, err
 	}
 
+	updatedTask, err = t.taskRepo.GetTaskByID(updatedTask.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &dto.UpdateTaskResponse{
 		ID:          updatedTask.ID,
 		Title:       updatedTask.Title,
@@ -115,12 +120,13 @@ func (t *taskService) UpdateStatus(id int, payload *dto.UpdateStatusOfATaskReque
 	}
 	task.ID = uint(id)
 
-	task, err := t.taskRepo.GetTaskByID(task.ID)
+	oldTask, err := t.taskRepo.GetTaskByID(task.ID)
 	if err != nil {
 		return nil, err
 	}
+	oldTask.Status = task.Status
 
-	updatedTask, err := t.taskRepo.UpdateTask(task)
+	updatedTask, err := t.taskRepo.UpdateTask(oldTask)
 	if err != nil {
 		return nil, err
 	}
