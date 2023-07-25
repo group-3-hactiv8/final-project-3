@@ -9,21 +9,21 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	host     = "localhost"
-	user     = "postgres"
-	password = "postgres"
-	dbPort   = 5432
-	dbname   = "final-project-3"
-)
-
 // const (
-// 	host     = "containers-us-west-125.railway.app"
+// 	host     = "localhost"
 // 	user     = "postgres"
-// 	password = "R1kXFyBRoSjacpC575bb"
-// 	dbPort   = 5592
-// 	dbname   = "railway"
+// 	password = "postgres"
+// 	dbPort   = 5432
+// 	dbname   = "final-project-3"
 // )
+
+const (
+	host     = "containers-us-west-125.railway.app"
+	user     = "postgres"
+	password = "R1kXFyBRoSjacpC575bb"
+	dbPort   = 5592
+	dbname   = "railway"
+)
 
 var (
 	db  *gorm.DB

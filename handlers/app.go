@@ -25,11 +25,11 @@ func StartApp() {
 
 	router := gin.Default()
 
-	// router.GET("/health-check-fp3", func (c *gin.Context){
-	// 	c.JSON(200, gin.H{
-	// 		"appName" : "kanbanBoard",
-	// 	})
-	// })
+	router.GET("/health-check-fp3", func (c *gin.Context){
+		c.JSON(200, gin.H{
+			"appName" : "kanbanBoard",
+		})
+	})
 
 	userRepo := user_pg.NewUserPG(db)
 	userService := services.NewUserService(userRepo)
@@ -77,7 +77,7 @@ func StartApp() {
 	docs.SwaggerInfo.Title = "API Kanban Board"
 	docs.SwaggerInfo.Description = "Ini adalah server API Kanban Board."
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "final-project-2-production-1503.up.railway.app/swagger/docs/index.html#/"
+	docs.SwaggerInfo.Host = "final-project-3-production-1fec.up.railway.app/swagger/docs/index.html#/"
 	docs.SwaggerInfo.Schemes = []string{"https", "http"}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
