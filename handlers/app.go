@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"final-project-3/database"
-	_ "final-project-3/docs"
+	// _ "final-project-3/docs"
 	"final-project-3/handlers/http_handlers"
 	"final-project-3/middlewares"
 	"final-project-3/repositories/category_repository/category_pg"
 	"final-project-3/repositories/task_repository/task_pg"
 	"final-project-3/repositories/user_repository/user_pg"
 	"final-project-3/services"
+	"final-project-3/docs"
 
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -16,24 +17,19 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 )
 
-// @title Kanban Board API
-// @version 1.0
-// @description This is a server for Final Project 3: Kanban Board API.
-// @termsOfService http://swagger.io/terms/
-// @contact.name Swagger API Team
-// @host final-project-3-production-1fec.up.railway.app
-// @BasePath /
-func StartApp() *gin.Engine {
+const PORT = ":8080"
+
+func StartApp() {
 	database.StartDB()
 	db := database.GetPostgresInstance()
 
 	router := gin.Default()
 
-	router.GET("/health-check-fp3", func (c *gin.Context){
-		c.JSON(200, gin.H{
-			"appName" : "kanbanBoard",
-		})
-	})
+	// router.GET("/health-check-fp3", func (c *gin.Context){
+	// 	c.JSON(200, gin.H{
+	// 		"appName" : "kanbanBoard",
+	// 	})
+	// })
 
 	userRepo := user_pg.NewUserPG(db)
 	userService := services.NewUserService(userRepo)
@@ -78,8 +74,16 @@ func StartApp() *gin.Engine {
 		tasksRouter.DELETE("/:taskId", middlewares.TaskAuthorization(), taskHandler.DeleteTask)
 	}
 
+	docs.SwaggerInfo.Title = "API Kanban Board"
+	docs.SwaggerInfo.Description = "Ini adalah server API Kanban Board."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:8080"
+	// docs.SwaggerInfo.Host = "final-project-2-production-1503.up.railway.app/swagger/docs/index.html#/"
+	// docs.SwaggerInfo.Schemes = []string{"https","http"}
+	docs.SwaggerInfo.Schemes = []string{"http"}
+
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	return router
+	router.Run(PORT)
 
 }

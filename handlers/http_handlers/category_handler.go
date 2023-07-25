@@ -27,6 +27,7 @@ func NewCategoryHandler(categoryService services.CategoryService) *categoryHandl
 //	@Produce		json
 //	@Param			category  body      dto.NewCategoryRequest	true	"Create Category request body"
 //	@Success		201		{object}	dto.NewCategoryResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401		{object}	errs.MessageErrData
 //	@Failure		422		{object}	errs.MessageErrData
 //	@Failure		500		{object}	errs.MessageErrData
@@ -64,6 +65,7 @@ func (c *categoryHandler) CreateCategory(ctx *gin.Context) {
 //	@Tags			category
 //	@Produce		json
 //	@Success		200		{object}	dto.GetAllCategoryResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401		{object}	errs.MessageErrData
 //	@Failure		500		{object}	errs.MessageErrData
 //	@Router			/category [get]
@@ -86,6 +88,7 @@ func (c *categoryHandler) GetAllCategory(ctx *gin.Context) {
 //	@Param			category		body		dto.UpdateCategoryRequest	true	"Update category request body"
 //	@Param			categoryId		path		uint						true	"category ID request"
 //	@Success		200				{object}	dto.UpdateCategoryResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401				{object}	errs.MessageErrData
 //	@Failure		400				{object}	errs.MessageErrData
 //	@Failure		422				{object}	errs.MessageErrData
@@ -133,9 +136,10 @@ func (c *categoryHandler) UpdateCategory(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			categoryId	 path		uint						true	"Category ID request"
 //	@Success		200			{object}	dto.DeleteCategoryResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401			{object}	errs.MessageErrData
 //	@Failure		400			{object}	errs.MessageErrData
-//	@Router			/category/{id} [delete]
+//	@Router			/category/{categoryId} [delete]
 func (c *categoryHandler) DeleteCategory(ctx *gin.Context) {
 	ctyId := ctx.Param("categoryId")
 	ctyIdUint, err := strconv.ParseUint(ctyId, 10, 16)

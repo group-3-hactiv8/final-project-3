@@ -28,6 +28,7 @@ func NewTaskHandler(taskService services.TaskService) *taskHandler {
 //	@Produce		json
 //	@Param			task	body		dto.NewTaskRequest	true	"Create task request body"
 //	@Success		201		{object}	dto.NewTaskResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401		{object}	errs.MessageErrData
 //	@Failure		422		{object}	errs.MessageErrData
 //	@Failure		500		{object}	errs.MessageErrData
@@ -71,6 +72,7 @@ func (t *taskHandler) CreateTask(ctx *gin.Context) {
 //	@Tags			tasks
 //	@Produce		json
 //	@Success		200		{object}	dto.GetAllTasksResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401		{object}	errs.MessageErrData
 //	@Failure		500		{object}	errs.MessageErrData
 //	@Router			/tasks [get]
@@ -91,12 +93,14 @@ func (t *taskHandler) GetAllTasks(ctx *gin.Context) {
 //	@Tags			tasks
 //	@Accept			json
 //	@Produce		json
-//	@Param			user	body		dto.UpdateUserRequest	true	"Update a task request body"
-//	@Success		200		{object}	dto.UpdateUserResponse
+//	@Param			task	body		dto.UpdateTaskRequest	true	"Update a task request body"
+//	@Param			taskId	path		uint							true	"Task ID request"
+//	@Success		200		{object}	dto.UpdateTaskResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401		{object}	errs.MessageErrData
 //	@Failure		422		{object}	errs.MessageErrData
 //	@Failure		400		{object}	errs.MessageErrData
-//	@Router			/tasks/:taskId	 [put]
+//	@Router			/tasks/{taskId}	 [put]
 func (t *taskHandler) UpdateTask(ctx *gin.Context) {
 	taskId, err := strconv.Atoi(ctx.Param("taskId"))
 	if err != nil {
@@ -138,6 +142,7 @@ func (t *taskHandler) UpdateTask(ctx *gin.Context) {
 //	@Param			task	body		dto.UpdateStatusOfATaskRequest	true	"Update status of task request body"
 //	@Param			taskId	path		uint							true	"Task ID request"
 //	@Success		200		{object}	dto.UpdateTaskResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401		{object}	errs.MessageErrData
 //	@Failure		400		{object}	errs.MessageErrData
 //	@Failure		422		{object}	errs.MessageErrData
@@ -186,6 +191,7 @@ func (t *taskHandler) UpdateStatus(ctx *gin.Context) {
 //	@Param			task	body		dto.UpdateCategoryIdOfATasIdkRequest	true	"Update categoryId of task request body"
 //	@Param			taskId	path		uint									true	"Task ID request"
 //	@Success		200		{object}	dto.UpdateCategoryIdOfTaskIdResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401		{object}	errs.MessageErrData
 //	@Failure		400		{object}	errs.MessageErrData
 //	@Failure		422		{object}	errs.MessageErrData
@@ -239,9 +245,10 @@ func (t *taskHandler) UpdateCategoryIdOfTask(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			taskId		 path		uint						true	"Task ID request"
 //	@Success		200			{object}	dto.DeleteTaskResponse
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add your access token here>)
 //	@Failure		401			{object}	errs.MessageErrData
 //	@Failure		400			{object}	errs.MessageErrData
-//	@Router			/tasks/{id} [delete]
+//	@Router			/tasks/{taskId} [delete]
 func (t *taskHandler) DeleteTask(ctx *gin.Context) {
 	taskId := ctx.Param("taskId")
 	taskIdUint, err := strconv.ParseUint(taskId, 10, 32)
